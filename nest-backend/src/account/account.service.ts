@@ -1,17 +1,20 @@
-import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, BadRequestException, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { PrismaClient } from '../../app/generated/prisma';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import * as nodemailer from 'nodemailer';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
+import { JwtService } from '@nestjs/jwt';
 import { RequestRegisterDto } from './dto/create-account-request.dto';
 import { VerifyRegisterDto } from './dto/create-account-verify.dto';
+import { LoginDto } from './dto/sign-in-account.dto';
 
 const prisma = new PrismaClient();
 
 @Injectable()
 export class UserService {
+  constructor(private jwtService: JwtService) {}
   // 1. Отправка кода
   async requestRegister(dto: RequestRegisterDto) {
     const { login, email, password } = dto;
@@ -105,4 +108,29 @@ export class UserService {
       },
     };
   }
-};
+
+  // 3.Вход в аккаунт
+  async login(dto: LoginDto) {
+    const { email, password } = dto;
+
+    const account = await prisma.account.findUnique({ where: { email } });
+    if (!account) throw new UnauthorizedException('Неверный email или пароль');
+
+    const isPasswordValid = await bcrypt.compare(password, account.password);
+    if (!isPasswordValid)
+      throw new UnauthorizedException('Неверный email или пароль');
+
+    const payload = { userId: account.id, email: account.email };
+    const token = this.jwtService.sign(payload);
+
+    return {
+      message: 'Вход успешен',
+      token,
+      account: {
+        id: account.id,
+        login: account.login,
+        email: account.email,
+      },
+    };
+  }
+}

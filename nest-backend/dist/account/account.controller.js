@@ -17,6 +17,8 @@ const common_1 = require("@nestjs/common");
 const account_service_1 = require("./account.service");
 const create_account_request_dto_1 = require("./dto/create-account-request.dto");
 const create_account_verify_dto_1 = require("./dto/create-account-verify.dto");
+const swagger_1 = require("@nestjs/swagger");
+const sign_in_account_dto_1 = require("./dto/sign-in-account.dto");
 let UserController = class UserController {
     userService;
     constructor(userService) {
@@ -25,15 +27,19 @@ let UserController = class UserController {
     requestRegister(dto) {
         return this.userService.requestRegister(dto);
     }
-    ;
     verifyRegister(dto) {
         return this.userService.verifyRegister(dto);
     }
-    ;
+    login(dto) {
+        return this.userService.login(dto);
+    }
 };
 exports.UserController = UserController;
 __decorate([
     (0, common_1.Post)('request-register'),
+    (0, swagger_1.ApiOperation)({ summary: 'Запрос на регистрацию (отправка кода на почту)' }),
+    (0, swagger_1.ApiResponse)({ status: 201, description: 'Код отправлен на почту.' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Ошибка валидации данных.' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_account_request_dto_1.RequestRegisterDto]),
@@ -41,12 +47,26 @@ __decorate([
 ], UserController.prototype, "requestRegister", null);
 __decorate([
     (0, common_1.Post)('verify-register'),
+    (0, swagger_1.ApiOperation)({ summary: 'Подтверждение регистрации (по коду из почты)' }),
+    (0, swagger_1.ApiResponse)({ status: 201, description: 'Аккаунт успешно зарегистрирован.' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Неверный код подтверждения.' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_account_verify_dto_1.VerifyRegisterDto]),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "verifyRegister", null);
+__decorate([
+    (0, common_1.Post)('login'),
+    (0, swagger_1.ApiOperation)({ summary: 'Вход в аккаунт (получение JWT)' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Вход успешен, возвращается JWT и данные пользователя.' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Неверный email или пароль.' }),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [sign_in_account_dto_1.LoginDto]),
+    __metadata("design:returntype", void 0)
+], UserController.prototype, "login", null);
 exports.UserController = UserController = __decorate([
+    (0, swagger_1.ApiTags)('User'),
     (0, common_1.Controller)('user'),
     __metadata("design:paramtypes", [account_service_1.UserService])
 ], UserController);

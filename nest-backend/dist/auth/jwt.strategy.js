@@ -9,20 +9,24 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VerifyRegisterDto = void 0;
-const swagger_1 = require("@nestjs/swagger");
-class VerifyRegisterDto {
-    email;
-    code;
-}
-exports.VerifyRegisterDto = VerifyRegisterDto;
-__decorate([
-    (0, swagger_1.ApiProperty)({ example: 'expamle@gmail.com', description: 'Email пользователя' }),
-    __metadata("design:type", String)
-], VerifyRegisterDto.prototype, "email", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ example: '321654', description: 'Code подтверждения с почты' }),
-    __metadata("design:type", String)
-], VerifyRegisterDto.prototype, "code", void 0);
-;
-//# sourceMappingURL=create-account-verify.dto.js.map
+exports.JwtStrategy = void 0;
+const common_1 = require("@nestjs/common");
+const passport_1 = require("@nestjs/passport");
+const passport_jwt_1 = require("passport-jwt");
+let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy) {
+    constructor() {
+        super({
+            jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
+            secretOrKey: process.env.JWT_SECRET || 'supersecret',
+        });
+    }
+    async validate(payload) {
+        return { userId: payload.userId, email: payload.email };
+    }
+};
+exports.JwtStrategy = JwtStrategy;
+exports.JwtStrategy = JwtStrategy = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [])
+], JwtStrategy);
+//# sourceMappingURL=jwt.strategy.js.map

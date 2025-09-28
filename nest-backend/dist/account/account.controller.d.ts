@@ -1,6 +1,7 @@
 import { UserService } from './account.service';
 import { RequestRegisterDto } from "./dto/create-account-request.dto";
 import { VerifyRegisterDto } from "./dto/create-account-verify.dto";
+import { LoginDto } from "./dto/sign-in-account.dto";
 export declare class UserController {
     private readonly userService;
     constructor(userService: UserService);
@@ -13,6 +14,15 @@ export declare class UserController {
             id: string;
             email: string;
             key: string;
+        };
+    }>;
+    login(dto: LoginDto): Promise<{
+        message: string;
+        token: string;
+        account: {
+            id: string;
+            login: string;
+            email: string;
         };
     }>;
 }

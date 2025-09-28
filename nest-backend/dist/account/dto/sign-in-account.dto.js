@@ -9,20 +9,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VerifyRegisterDto = void 0;
+exports.LoginDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
-class VerifyRegisterDto {
+class LoginDto {
     email;
-    code;
+    password;
 }
-exports.VerifyRegisterDto = VerifyRegisterDto;
+exports.LoginDto = LoginDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'expamle@gmail.com', description: 'Email пользователя' }),
+    (0, swagger_1.ApiProperty)({ example: 'example@gmail.com', description: 'Email пользователя' }),
     __metadata("design:type", String)
-], VerifyRegisterDto.prototype, "email", void 0);
+], LoginDto.prototype, "email", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: '321654', description: 'Code подтверждения с почты' }),
+    (0, swagger_1.ApiProperty)({ example: 'strongPassword123', description: 'Пароль пользователя' }),
     __metadata("design:type", String)
-], VerifyRegisterDto.prototype, "code", void 0);
+], LoginDto.prototype, "password", void 0);
 ;
-//# sourceMappingURL=create-account-verify.dto.js.map
+//# sourceMappingURL=sign-in-account.dto.js.map

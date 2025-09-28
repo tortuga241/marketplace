@@ -6,25 +6,27 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AccountMoule = void 0;
+exports.AuthModule = void 0;
 const common_1 = require("@nestjs/common");
-const account_service_1 = require("./account.service");
-const account_controller_1 = require("./account.controller");
+const account_service_1 = require("../account/account.service");
+const account_controller_1 = require("../account/account.controller");
 const jwt_1 = require("@nestjs/jwt");
-let AccountMoule = class AccountMoule {
+const passport_1 = require("@nestjs/passport");
+const jwt_strategy_1 = require("./jwt.strategy");
+let AuthModule = class AuthModule {
 };
-exports.AccountMoule = AccountMoule;
-exports.AccountMoule = AccountMoule = __decorate([
+exports.AuthModule = AuthModule;
+exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            passport_1.PassportModule,
             jwt_1.JwtModule.register({
                 secret: process.env.JWT_SECRET || 'supersecret',
                 signOptions: { expiresIn: '1h' },
             }),
         ],
         controllers: [account_controller_1.UserController],
-        providers: [account_service_1.UserService],
-        exports: [account_service_1.UserService],
+        providers: [account_service_1.UserService, jwt_strategy_1.JwtStrategy],
     })
-], AccountMoule);
-//# sourceMappingURL=account.module.js.map
+], AuthModule);
+//# sourceMappingURL=auth.module.js.map

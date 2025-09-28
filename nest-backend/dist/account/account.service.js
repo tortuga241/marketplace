@@ -38,6 +38,9 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
@@ -45,8 +48,13 @@ const prisma_1 = require("../../app/generated/prisma");
 const bcrypt = __importStar(require("bcrypt"));
 const uuid_1 = require("uuid");
 const nodemailer = __importStar(require("nodemailer"));
+const jwt_1 = require("@nestjs/jwt");
 const prisma = new prisma_1.PrismaClient();
 let UserService = class UserService {
+    jwtService;
+    constructor(jwtService) {
+        this.jwtService = jwtService;
+    }
     async requestRegister(dto) {
         const { login, email, password } = dto;
         if (!login || !email || !password) {
@@ -120,10 +128,30 @@ let UserService = class UserService {
             },
         };
     }
+    async login(dto) {
+        const { email, password } = dto;
+        const account = await prisma.account.findUnique({ where: { email } });
+        if (!account)
+            throw new common_1.UnauthorizedException('Неверный email или пароль');
+        const isPasswordValid = await bcrypt.compare(password, account.password);
+        if (!isPasswordValid)
+            throw new common_1.UnauthorizedException('Неверный email или пароль');
+        const payload = { userId: account.id, email: account.email };
+        const token = this.jwtService.sign(payload);
+        return {
+            message: 'Вход успешен',
+            token,
+            account: {
+                id: account.id,
+                login: account.login,
+                email: account.email,
+            },
+        };
+    }
 };
 exports.UserService = UserService;
 exports.UserService = UserService = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [jwt_1.JwtService])
 ], UserService);
-;
 //# sourceMappingURL=account.service.js.map
