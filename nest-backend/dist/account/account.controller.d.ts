@@ -1,0 +1,18 @@
+import { UserService } from './account.service';
+import { RequestRegisterDto } from "./dto/create-account-request.dto";
+import { VerifyRegisterDto } from "./dto/create-account-verify.dto";
+export declare class UserController {
+    private readonly userService;
+    constructor(userService: UserService);
+    requestRegister(dto: RequestRegisterDto): Promise<{
+        message: string;
+    }>;
+    verifyRegister(dto: VerifyRegisterDto): Promise<{
+        message: string;
+        account: {
+            id: string;
+            email: string;
+            key: string;
+        };
+    }>;
+}

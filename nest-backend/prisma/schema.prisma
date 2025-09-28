@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+//ACCOUNT_TAB
+model Account {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  login       String   @unique
+  password    String
+  email       String   @unique
+  key         String   @unique
+  isVerified  Boolean  @default(false)
+  verifyToken String?
+}
+
+//ACCOUNT_VERIFECATION
+model EmailVerification {
+  id        String      @id @default(auto()) @map("_id") @db.ObjectId
+  email     String
+  login     String
+  password  String  
+  key       String
+  code      String
+  createdAt DateTime @default(now())
+}
+
+//SHOP_TAB
+model Shop {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  ownerId     String  @db.ObjectId
+  type        String
+  title       String
+  discription String
+}
+
+
+//LOT_TAB
+model Lot {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  shopId      String  @db.ObjectId
+  accoutId    String  @db.ObjectId
+  type        String
+  cost        String
+  title       String
+  discription String
+}
+
+//ARTICLE_TAB
+model Article {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  type        String 
+  discription String
+  cost        String
+}
+
+//REVIEWS_TAB 
+model Review {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  accountId   String  @db.ObjectId
+  shopId      String  @db.ObjectId
+  lotId       String?  @db.ObjectId
+  artcileId   String?  @db.ObjectId
+  rating      Int
+  discription String
+  createdAt   DateTime @default(now())
+}
+
+//ORDER_TAB
+model Order {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  code      String  @unique
+  shopId    String  @db.ObjectId
+  accountId String  @db.ObjectId
+  cost      String 
+  status    String 
+  createdAt DateTime  @default(now())
+}
+
+//CHAT_TAB
+model Chat {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  buyerId     String   @db.ObjectId   
+  sellerId    String   @db.ObjectId   
+  messageId   String   @db.ObjectId
+}
+
+//MESSAGE_TAB 
+model Message {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  chatId    String   @db.ObjectId
+  senderId  String   @db.ObjectId   
+  content   String
+  createdAt DateTime @default(now())
+}
