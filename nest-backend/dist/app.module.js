@@ -49,6 +49,7 @@ const path = __importStar(require("path"));
 dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 console.log('>>> DATABASE_URL (dotenv):', process.env.DATABASE_URL);
 const account_module_1 = require("./account/account.module");
+const shop_module_1 = require("./shop/shop.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -56,7 +57,8 @@ exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             config_1.ConfigModule.forRoot({ isGlobal: true }),
-            account_module_1.AccountMoule
+            account_module_1.AccountMoule,
+            shop_module_1.ShopModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

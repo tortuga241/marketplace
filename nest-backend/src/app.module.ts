@@ -11,12 +11,14 @@ console.log('>>> DATABASE_URL (dotenv):', process.env.DATABASE_URL);
 
 //Импорт основных модулей проекта
 import { AccountMoule } from './account/account.module';
+import { ShopModule } from './shop/shop.module';
 
 @Module({
   //Сюда импортируем все модули
   imports: [ 
     ConfigModule.forRoot({ isGlobal: true }),
-    AccountMoule 
+    AccountMoule,
+    ShopModule
   ],
   controllers: [AppController],
   providers: [AppService],

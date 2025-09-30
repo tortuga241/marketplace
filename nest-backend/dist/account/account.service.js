@@ -44,12 +44,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
-const prisma_1 = require("../../app/generated/prisma");
+const client_1 = require("@prisma/client");
 const bcrypt = __importStar(require("bcrypt"));
 const uuid_1 = require("uuid");
 const nodemailer = __importStar(require("nodemailer"));
 const jwt_1 = require("@nestjs/jwt");
-const prisma = new prisma_1.PrismaClient();
+const prisma = new client_1.PrismaClient();
 let UserService = class UserService {
     jwtService;
     constructor(jwtService) {
