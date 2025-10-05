@@ -1,10 +1,11 @@
-import { Controller, Post, Get, Body } from "@nestjs/common";
+import { Controller, Post, Get, Body, Res } from "@nestjs/common";
 import { UserService } from './account.service';
 import { RequestRegisterDto } from "./dto/create-account-request.dto";
 import { VerifyRegisterDto } from "./dto/create-account-verify.dto";
 import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { LoginDto } from "./dto/sign-in-account.dto";
 import { ApiBearerAuth } from "@nestjs/swagger";
+import type { Response } from 'express';
 
 @ApiTags('User')
 @Controller('user')
@@ -32,9 +33,23 @@ export class UserController {
     // Вход в аккаунт
     @Post('login')
     @ApiOperation({ summary: 'Вход в аккаунт (получение JWT)' })
-    @ApiResponse({ status: 200, description: 'Вход успешен, возвращается JWT и данные пользователя.' })
+    @ApiResponse({ status: 200, description: 'Вход успешен, cookie установлена.' })
     @ApiResponse({ status: 401, description: 'Неверный email или пароль.' })
-    login(@Body() dto: LoginDto) {
-        return this.userService.login(dto);
+    async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
+        const data = await this.userService.login(dto);
+
+        // ✅ Устанавливаем cookie
+        res.cookie('jwt', data.token, {
+        httpOnly: true,     // нельзя прочитать из JS (безопасность)
+        secure: false,      // true если HTTPS
+        sameSite: 'lax',    // защита от CSRF
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 дней
+        });
+
+        // ✅ Обязательно возвращаем ответ
+        return {
+        message: 'Вход успешен',
+        user: data.account,
+        };
     }
-};
+}

@@ -11,6 +11,7 @@ const common_1 = require("@nestjs/common");
 const account_service_1 = require("./account.service");
 const account_controller_1 = require("./account.controller");
 const jwt_1 = require("@nestjs/jwt");
+const prisma_service_1 = require("../prisma/prisma.service");
 let AccountMoule = class AccountMoule {
 };
 exports.AccountMoule = AccountMoule;
@@ -23,7 +24,7 @@ exports.AccountMoule = AccountMoule = __decorate([
             }),
         ],
         controllers: [account_controller_1.UserController],
-        providers: [account_service_1.UserService],
+        providers: [account_service_1.UserService, prisma_service_1.PrismaService],
         exports: [account_service_1.UserService],
     })
 ], AccountMoule);

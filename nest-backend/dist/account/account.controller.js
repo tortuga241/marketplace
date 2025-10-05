@@ -30,8 +30,18 @@ let UserController = class UserController {
     verifyRegister(dto) {
         return this.userService.verifyRegister(dto);
     }
-    login(dto) {
-        return this.userService.login(dto);
+    async login(dto, res) {
+        const data = await this.userService.login(dto);
+        res.cookie('jwt', data.token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax',
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+        return {
+            message: 'Вход успешен',
+            user: data.account,
+        };
     }
 };
 exports.UserController = UserController;
@@ -58,17 +68,17 @@ __decorate([
 __decorate([
     (0, common_1.Post)('login'),
     (0, swagger_1.ApiOperation)({ summary: 'Вход в аккаунт (получение JWT)' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Вход успешен, возвращается JWT и данные пользователя.' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Вход успешен, cookie установлена.' }),
     (0, swagger_1.ApiResponse)({ status: 401, description: 'Неверный email или пароль.' }),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Res)({ passthrough: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [sign_in_account_dto_1.LoginDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [sign_in_account_dto_1.LoginDto, Object]),
+    __metadata("design:returntype", Promise)
 ], UserController.prototype, "login", null);
 exports.UserController = UserController = __decorate([
     (0, swagger_1.ApiTags)('User'),
     (0, common_1.Controller)('user'),
     __metadata("design:paramtypes", [account_service_1.UserService])
 ], UserController);
-;
 //# sourceMappingURL=account.controller.js.map

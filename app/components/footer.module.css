@@ -1,0 +1,206 @@
+.footer {
+  background: #fff;
+  border-top: 1px solid #eee;
+  padding: 60px 80px 20px;
+  font-family: "Inter", sans-serif;
+  color: #333;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr 1.2fr;
+  gap: 40px;
+  align-items: start;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ==== ЛОГО ==== */
+.logoBlock {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.logoCircle {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #7f5af0, #9b6ef3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.logoText {
+  font-size: 20px;
+  font-weight: 600;
+  color: #4c3eff;
+}
+
+.description {
+  color: #666;
+  font-size: 15px;
+  margin-bottom: 20px;
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+/* ==== СОЦСЕТИ ==== */
+.socials {
+  display: flex;
+  gap: 16px;
+}
+
+.socials svg {
+  color: #444;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.socials svg:hover {
+  color: #7f5af0;
+}
+
+/* ==== СПИСКИ ==== */
+.section h4 {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.section li {
+  color: #666;
+  font-size: 15px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.section li:hover {
+  color: #7f5af0;
+}
+
+/* ==== ПОДПИСКА ==== */
+.newsText {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 14px;
+}
+
+.subscribe {
+  display: flex;
+  align-items: center;
+  background: #f7f8fa;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+
+.subscribe input {
+  border: none;
+  background: transparent;
+  padding: 10px 12px;
+  flex: 1;
+  outline: none;
+  font-size: 14px;
+}
+
+.subscribe button {
+  background: linear-gradient(135deg, #7f5af0, #9b6ef3);
+  border: none;
+  color: white;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.subscribe button:hover {
+  opacity: 0.9;
+}
+
+/* ==== КОНТАКТЫ ==== */
+.contacts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.contacts div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #5a4ee5;
+  font-size: 14px;
+}
+
+/* ==== НИЖНЯЯ ПОЛОСА ==== */
+.bottom {
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.bottom p {
+  color: #666;
+  font-size: 14px;
+}
+
+.links {
+  display: flex;
+  gap: 20px;
+}
+
+.links a {
+  color: #666;
+  font-size: 14px;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.links a:hover {
+  color: #7f5af0;
+}
+
+/* ==== АДАПТИВ ==== */
+@media (max-width: 1000px) {
+  .container {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+
+  .footer {
+    padding: 40px 30px 20px;
+  }
+
+  .subscribe {
+    flex-direction: column;
+  }
+
+  .subscribe button {
+    width: 100%;
+    border-radius: 0 0 8px 8px;
+  }
+}

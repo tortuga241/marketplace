@@ -1,5 +1,4 @@
 import { Injectable, BadRequestException, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
-// import { PrismaClient } from '../../app/generated/prisma';
 import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
@@ -7,6 +6,7 @@ import * as nodemailer from 'nodemailer';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 import { JwtService } from '@nestjs/jwt';
+import { Response } from 'express';
 import { RequestRegisterDto } from './dto/create-account-request.dto';
 import { VerifyRegisterDto } from './dto/create-account-verify.dto';
 import { LoginDto } from './dto/sign-in-account.dto';
@@ -74,55 +74,79 @@ export class UserService {
 
   // 2. Проверка кода и создание аккаунта
   async verifyRegister(dto: VerifyRegisterDto) {
-    const { email, code } = dto;
+    const {  code } = dto;
 
-    if (!email || !code) {
+    if (!code) {
       throw new BadRequestException('Email и код обязательны');
     }
 
     // Ищем во временной таблице
     const pending = await prisma.emailVerification.findFirst({
-      where: { email, code },
+      where: { code },
     });
 
-    if (!pending) throw new BadRequestException('Неверный код или почта');
+    if (!pending) throw new BadRequestException('Неверный код');
+
+    const existingLogin = await prisma.account.findUnique({
+      where: { login: pending.login },
+    });
+    if (existingLogin) throw new BadRequestException('Логин уже используется');
+
+    const existingEmail = await prisma.account.findUnique({
+      where: { email: pending.email },
+    });
+    if (existingEmail) throw new BadRequestException('Email уже используется');
+
 
     // Создаём аккаунт
-    const newAccount = await prisma.account.create({
-      data: {
-        login: pending.login,
-        email: pending.email,
-        password: pending.password,
-        key: pending.key,
-      },
-    });
+    try {
+      const newAccount = await prisma.account.create({
+        data: {
+          login: pending.login,
+          email: pending.email,
+          password: pending.password,
+          key: pending.key,
+        },
+      });
 
-    // Удаляем временные данные
-    await prisma.emailVerification.delete({ where: { id: pending.id } });
+      // Удаляем временные данные
+      await prisma.emailVerification.delete({ where: { id: pending.id } });
 
-    return {
-      message: 'Регистрация завершена',
-      account: {
-        id: newAccount.id,
-        email: newAccount.email,
-        key: newAccount.key,
-      },
-    };
+      return {
+        message: 'Регистрация завершена',
+        account: {
+          id: newAccount.id,
+          email: newAccount.email,
+          key: newAccount.key,
+        },
+      };
+    }
+    catch (error: any) {
+      if (error.code === 'P2002') {
+        throw new BadRequestException('Такой логин или email уже существует');
+      }
+      throw error;
+    }
   }
 
   // 3.Вход в аккаунт
   async login(dto: LoginDto) {
+
+    console.log('DTO:', dto);
+
     const { email, password } = dto;
-
     const account = await prisma.account.findUnique({ where: { email } });
-    if (!account) throw new UnauthorizedException('Неверный email или пароль');
+    console.log('Account:', account)
 
+    if (!account) throw new UnauthorizedException('Неверный email или пароль');
     const isPasswordValid = await bcrypt.compare(password, account.password);
-    if (!isPasswordValid)
-      throw new UnauthorizedException('Неверный email или пароль');
+    if (!isPasswordValid) throw new UnauthorizedException('Неверный email или пароль');
+
+    console.log('Password:', isPasswordValid);
 
     const payload = { userId: account.id, email: account.email };
     const token = this.jwtService.sign(payload);
+    console.log('токен сгенерирован');
 
     return {
       message: 'Вход успешен',
@@ -133,5 +157,10 @@ export class UserService {
         email: account.email,
       },
     };
+  }
+  // Выход
+  async logout(res: Response) {
+    res.clearCookie('jwt');
+    return { message: 'Вы вышли из аккаунта' };
   }
 }

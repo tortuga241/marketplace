@@ -1,4 +1,5 @@
 import { JwtService } from '@nestjs/jwt';
+import { Response } from 'express';
 import { RequestRegisterDto } from './dto/create-account-request.dto';
 import { VerifyRegisterDto } from './dto/create-account-verify.dto';
 import { LoginDto } from './dto/sign-in-account.dto';
@@ -24,5 +25,8 @@ export declare class UserService {
             login: string;
             email: string;
         };
+    }>;
+    logout(res: Response): Promise<{
+        message: string;
     }>;
 }

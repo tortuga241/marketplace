@@ -101,43 +101,65 @@ let UserService = class UserService {
         return { message: 'Код отправлен на почту' };
     }
     async verifyRegister(dto) {
-        const { email, code } = dto;
-        if (!email || !code) {
+        const { code } = dto;
+        if (!code) {
             throw new common_1.BadRequestException('Email и код обязательны');
         }
         const pending = await prisma.emailVerification.findFirst({
-            where: { email, code },
+            where: { code },
         });
         if (!pending)
-            throw new common_1.BadRequestException('Неверный код или почта');
-        const newAccount = await prisma.account.create({
-            data: {
-                login: pending.login,
-                email: pending.email,
-                password: pending.password,
-                key: pending.key,
-            },
+            throw new common_1.BadRequestException('Неверный код');
+        const existingLogin = await prisma.account.findUnique({
+            where: { login: pending.login },
         });
-        await prisma.emailVerification.delete({ where: { id: pending.id } });
-        return {
-            message: 'Регистрация завершена',
-            account: {
-                id: newAccount.id,
-                email: newAccount.email,
-                key: newAccount.key,
-            },
-        };
+        if (existingLogin)
+            throw new common_1.BadRequestException('Логин уже используется');
+        const existingEmail = await prisma.account.findUnique({
+            where: { email: pending.email },
+        });
+        if (existingEmail)
+            throw new common_1.BadRequestException('Email уже используется');
+        try {
+            const newAccount = await prisma.account.create({
+                data: {
+                    login: pending.login,
+                    email: pending.email,
+                    password: pending.password,
+                    key: pending.key,
+                },
+            });
+            await prisma.emailVerification.delete({ where: { id: pending.id } });
+            return {
+                message: 'Регистрация завершена',
+                account: {
+                    id: newAccount.id,
+                    email: newAccount.email,
+                    key: newAccount.key,
+                },
+            };
+        }
+        catch (error) {
+            if (error.code === 'P2002') {
+                throw new common_1.BadRequestException('Такой логин или email уже существует');
+            }
+            throw error;
+        }
     }
     async login(dto) {
+        console.log('DTO:', dto);
         const { email, password } = dto;
         const account = await prisma.account.findUnique({ where: { email } });
+        console.log('Account:', account);
         if (!account)
             throw new common_1.UnauthorizedException('Неверный email или пароль');
         const isPasswordValid = await bcrypt.compare(password, account.password);
         if (!isPasswordValid)
             throw new common_1.UnauthorizedException('Неверный email или пароль');
+        console.log('Password:', isPasswordValid);
         const payload = { userId: account.id, email: account.email };
         const token = this.jwtService.sign(payload);
+        console.log('токен сгенерирован');
         return {
             message: 'Вход успешен',
             token,
@@ -147,6 +169,10 @@ let UserService = class UserService {
                 email: account.email,
             },
         };
+    }
+    async logout(res) {
+        res.clearCookie('jwt');
+        return { message: 'Вы вышли из аккаунта' };
     }
 };
 exports.UserService = UserService;
