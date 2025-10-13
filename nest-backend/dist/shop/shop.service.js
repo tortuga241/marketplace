@@ -12,7 +12,13 @@ const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 let ShopService = class ShopService {
     async createShop(ownerId, dto) {
-        if (!dto.type || !dto.title || !dto.discription) {
+        const user = await prisma.account.findUnique({
+            where: { id: ownerId }
+        });
+        if (!user) {
+            throw new common_1.UnauthorizedException('Пользователь не найден');
+        }
+        if (!dto.type || !dto.title || !dto.description || !dto.phone) {
             throw new common_1.BadRequestException('Все поля обязательны');
         }
         const existing = await prisma.shop.findUnique({ where: { ownerId } });
@@ -23,7 +29,8 @@ let ShopService = class ShopService {
                 ownerId,
                 type: dto.type,
                 title: dto.title,
-                discription: dto.discription,
+                description: dto.description,
+                phone: dto.phone
             },
         });
         return shop;
@@ -32,7 +39,7 @@ let ShopService = class ShopService {
         return prisma.shop.findUnique({ where: { ownerId } });
     }
     async updateShop(ownerId, dto) {
-        if (!dto.type || !dto.title || !dto.discription) {
+        if (!dto.type || !dto.title || !dto.description || !dto.phone) {
             throw new common_1.BadRequestException('Все поля обязательны');
         }
         const shop = await prisma.shop.findUnique({ where: { ownerId } });
@@ -43,7 +50,8 @@ let ShopService = class ShopService {
             data: {
                 type: dto.type,
                 title: dto.title,
-                discription: dto.discription,
+                description: dto.description,
+                phone: dto.phone
             },
         });
     }

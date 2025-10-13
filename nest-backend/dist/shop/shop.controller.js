@@ -17,7 +17,7 @@ const common_1 = require("@nestjs/common");
 const shop_service_1 = require("./shop.service");
 const open_shop_dto_1 = require("./dto/open-shop.dto");
 const swagger_1 = require("@nestjs/swagger");
-const jwt_strategy_1 = require("../auth/jwt.strategy");
+const passport_1 = require("@nestjs/passport");
 let ShopController = class ShopController {
     shopService;
     constructor(shopService) {
@@ -28,15 +28,17 @@ let ShopController = class ShopController {
         return this.shopService.createShop(ownerId, dto);
     }
     getShop(req) {
-        return this.shopService.getShop(req.user.id);
+        const ownerId = req.user.id;
+        return this.shopService.getShop(ownerId);
     }
     updateShop(req, dto) {
-        return this.shopService.updateShop(req.user.id, dto);
+        const ownerId = req.user.id;
+        return this.shopService.updateShop(ownerId, dto);
     }
 };
 exports.ShopController = ShopController;
 __decorate([
-    (0, common_1.UseGuards)(jwt_strategy_1.JwtStrategy),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
     (0, common_1.Post)('create'),
     (0, swagger_1.ApiOperation)({ summary: 'Создать магазин' }),
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Магазин создан' }),
@@ -47,7 +49,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ShopController.prototype, "createShop", null);
 __decorate([
-    (0, common_1.UseGuards)(jwt_strategy_1.JwtStrategy),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
     (0, common_1.Get)('my'),
     (0, swagger_1.ApiOperation)({ summary: 'Получить свой магазин' }),
     __param(0, (0, common_1.Req)()),
@@ -56,7 +58,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ShopController.prototype, "getShop", null);
 __decorate([
-    (0, common_1.UseGuards)(jwt_strategy_1.JwtStrategy),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
     (0, common_1.Put)('update'),
     (0, swagger_1.ApiOperation)({ summary: 'Обновить магазин' }),
     __param(0, (0, common_1.Req)()),

@@ -19,6 +19,7 @@ const create_account_request_dto_1 = require("./dto/create-account-request.dto")
 const create_account_verify_dto_1 = require("./dto/create-account-verify.dto");
 const swagger_1 = require("@nestjs/swagger");
 const sign_in_account_dto_1 = require("./dto/sign-in-account.dto");
+const passport_1 = require("@nestjs/passport");
 let UserController = class UserController {
     userService;
     constructor(userService) {
@@ -31,16 +32,41 @@ let UserController = class UserController {
         return this.userService.verifyRegister(dto);
     }
     async login(dto, res) {
-        const data = await this.userService.login(dto);
-        res.cookie('jwt', data.token, {
+        console.log('Login controller started...');
+        try {
+            const data = await this.userService.login(dto);
+            console.log('User service successful. Token:', data.token);
+            res.cookie('jwt', data.token, {
+                httpOnly: true,
+                secure: process.env.USE_SECURE_COOKIE === 'true',
+                sameSite: 'lax',
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+            });
+            console.log('Cookie has been set on the response object.');
+            return {
+                message: 'Вход успешен',
+                user: data.account,
+            };
+        }
+        catch (error) {
+            console.error('Error in login controller:', error.message);
+            throw error;
+        }
+    }
+    getProfile(req) {
+        const userId = req.user.id;
+        return this.userService.getProfile(userId);
+    }
+    async logout(res) {
+        res.cookie('jwt', '', {
             httpOnly: true,
-            secure: false,
+            secure: process.env.USE_SECURE_COOKIE === 'true',
             sameSite: 'lax',
-            maxAge: 7 * 24 * 60 * 60 * 1000,
+            maxAge: 0,
+            expires: new Date(Date.now() - 1000),
         });
         return {
-            message: 'Вход успешен',
-            user: data.account,
+            message: 'Выход успешен'
         };
     }
 };
@@ -76,6 +102,26 @@ __decorate([
     __metadata("design:paramtypes", [sign_in_account_dto_1.LoginDto, Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "login", null);
+__decorate([
+    (0, common_1.Get)('profile'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, swagger_1.ApiOperation)({ summary: 'Получение профиля текущего пользователя' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Данные пользователя.', schema: { example: { id: '...', login: 'testuser', email: 'test@example.com' } } }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Пользователь не авторизован.' }),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], UserController.prototype, "getProfile", null);
+__decorate([
+    (0, common_1.Post)('logout'),
+    (0, swagger_1.ApiOperation)({ summary: 'Выход из аккаунта (очистка JWT cookie)' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Выход успешен, cookie удалены' }),
+    __param(0, (0, common_1.Res)({ passthrough: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "logout", null);
 exports.UserController = UserController = __decorate([
     (0, swagger_1.ApiTags)('User'),
     (0, common_1.Controller)('user'),

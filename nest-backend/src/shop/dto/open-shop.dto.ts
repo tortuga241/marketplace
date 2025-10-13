@@ -8,5 +8,8 @@ export class OpenShopDto {
     type: string
 
     @ApiProperty({ example: 'The best shop', description: 'Описание магазина' })
-    discription: string
+    description: string
+
+    @ApiProperty({example: '+ 777 333 68 07', description: 'Номер телефона продавца'})
+    phone: string
 }

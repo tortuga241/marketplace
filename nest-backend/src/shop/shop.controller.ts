@@ -2,33 +2,35 @@ import { Controller, Post, Get, Put, Body, Req, UseGuards } from "@nestjs/common
 import { ShopService } from "./shop.service";
 import { OpenShopDto } from "./dto/open-shop.dto";
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { JwtStrategy } from "src/auth/jwt.strategy";
+import { AuthGuard } from '@nestjs/passport'; // <-- Import the Passport AuthGuard
 
 @ApiTags('Shop')
 @Controller('shop')
 export class ShopController {
     constructor(private readonly shopService: ShopService) {}
 
-  @UseGuards(JwtStrategy)
+  @UseGuards(AuthGuard('jwt'))
   @Post('create')
   @ApiOperation({ summary: 'Создать магазин' })
   @ApiResponse({ status: 201, description: 'Магазин создан' })
   createShop(@Req() req, @Body() dto: OpenShopDto) {
-    const ownerId = req.user.id; // user.id берется из JWT
+    const ownerId = req.user.id;
     return this.shopService.createShop(ownerId, dto);
   }
 
-  @UseGuards(JwtStrategy)
+  @UseGuards(AuthGuard('jwt')) 
   @Get('my')
   @ApiOperation({ summary: 'Получить свой магазин' })
   getShop(@Req() req) {
-    return this.shopService.getShop(req.user.id);
+    const ownerId = req.user.id;
+    return this.shopService.getShop(ownerId);
   }
 
-  @UseGuards(JwtStrategy)
+  @UseGuards(AuthGuard('jwt'))
   @Put('update')
   @ApiOperation({ summary: 'Обновить магазин' })
   updateShop(@Req() req, @Body() dto: OpenShopDto) {
-    return this.shopService.updateShop(req.user.id, dto);
+    const ownerId = req.user.id;
+    return this.shopService.updateShop(ownerId, dto);
   }
 }

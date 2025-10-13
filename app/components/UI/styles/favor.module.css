@@ -1,0 +1,53 @@
+.container_card_favor {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    gap: 10px;
+    padding: 20px;
+    border: 1px solid #dcdcdc;
+    border-radius: 10px;
+    background-color: #fff;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.container_card_favor:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.title_card_favor {
+    font-size: 17;
+    font-weight: 600;
+}
+
+.type_favor {
+    display: inline-block;
+    border: solid #dcdcdc;
+    align-content: center;
+    padding: 5px 10px;
+    height: 15px;
+    border-radius: 15px;
+    font-size: 13px;
+    align-self: flex-start;
+}
+
+.favor_price {
+    color: rgb(106, 0, 255);
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.but_favor {
+    background-color: rgb(106, 0, 255);
+    border: none;
+    border-radius: 10px;
+    height: 30px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.but_favor:hover {
+    background-color: rgb(79, 0, 189);
+}

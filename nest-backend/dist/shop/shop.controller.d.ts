@@ -5,23 +5,29 @@ export declare class ShopController {
     constructor(shopService: ShopService);
     createShop(req: any, dto: OpenShopDto): Promise<{
         type: string;
+        description: string;
         title: string;
         id: string;
-        discription: string;
+        createdAt: Date;
+        phone: string;
         ownerId: string;
     }>;
     getShop(req: any): Promise<{
         type: string;
+        description: string;
         title: string;
         id: string;
-        discription: string;
+        createdAt: Date;
+        phone: string;
         ownerId: string;
     } | null>;
     updateShop(req: any, dto: OpenShopDto): Promise<{
         type: string;
+        description: string;
         title: string;
         id: string;
-        discription: string;
+        createdAt: Date;
+        phone: string;
         ownerId: string;
     }>;
 }

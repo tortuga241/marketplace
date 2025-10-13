@@ -159,7 +159,7 @@ let UserService = class UserService {
         console.log('Password:', isPasswordValid);
         const payload = { userId: account.id, email: account.email };
         const token = this.jwtService.sign(payload);
-        console.log('токен сгенерирован');
+        console.log(token);
         return {
             message: 'Вход успешен',
             token,
@@ -173,6 +173,22 @@ let UserService = class UserService {
     async logout(res) {
         res.clearCookie('jwt');
         return { message: 'Вы вышли из аккаунта' };
+    }
+    async getProfile(userId) {
+        const account = await prisma.account.findUnique({
+            where: {
+                id: userId,
+            },
+            select: {
+                id: true,
+                login: true,
+                email: true,
+            },
+        });
+        if (!account) {
+            throw new common_1.UnauthorizedException('Пользователь не найден');
+        }
+        return account;
     }
 };
 exports.UserService = UserService;

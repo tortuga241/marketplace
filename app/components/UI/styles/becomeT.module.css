@@ -1,0 +1,115 @@
+.main_container_t {
+    width: 100%;
+    max-width: 800px;
+    background: #fff;
+    margin: 0 auto;
+    border-radius: 12px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+    padding: 40px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.title_t {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.title_become_t {
+    font-size: 25px;
+}
+
+.title_txt_t {
+    font-size: 14px;
+    color: rgb(70, 70, 70);
+}
+
+.input_container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 20px;
+}
+
+.input_t {
+    height: 30px;
+    border: solid #f1f1f1;
+    border-radius: 5px;
+    background-color: #fbfbfb;
+    color: black;
+    padding: 5px;
+}
+
+.data_t {
+    margin-top: 20px;
+    border-radius: 10px;
+    background-color: rgb(228, 220, 255);
+    padding: 20px;
+}
+
+.data_title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #7128ee;
+}
+
+.col_container_t {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    gap: 5px;
+}
+
+.row_container {
+    display: flex;
+    flex-direction: row;
+    color: rgb(106, 122, 106);
+    font-size: 14px;
+}
+
+.row_container_t {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.but_f {
+    display: flex;
+    align-items: center;      
+    justify-content: center;  
+    gap: 8px;                 
+    width: 120px;
+    height: 40px;
+    border-radius: 5px;
+    border: solid 1px rgb(206, 206, 206);
+    cursor: pointer;
+    background-color: #7c3aed;
+    color: white;
+    transition: 0.3s;
+    font-weight: 500;
+}
+
+.but_t {
+    display: flex;
+    align-items: center;      
+    justify-content: center;  
+    gap: 8px;                 
+    width: 180px;
+    height: 40px;
+    border-radius: 5px;
+    border: solid 1px rgb(206, 206, 206);
+    cursor: pointer;
+    background-color: #7c3aed;
+    color: white;
+    transition: 0.3s;
+    font-weight: 500;
+}
+
+.but_t :hover{
+    background-color: #8f64d9;
+}
+
+.but_f:hover {
+    background-color: #8f64d9;
+}

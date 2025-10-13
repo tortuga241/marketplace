@@ -4,27 +4,43 @@ import { Search, Bell, User, ShoppingCart } from "lucide-react";
 import { useState, useEffect } from "react";
 import styles from './Header.module.css';
 import Link from "next/link";
+import axios from "axios";
 
 export default function Header() {
   const [login, setLogin] = useState(false);
+  const port = 'http://localhost:3001';
 
+
+  //Проверка на авторизацию пользователя
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) setLogin(true);
-  }, []);
+    const checkAuthStatus = async () => {
+    try {
+      const res = await axios.get(`${port}/user/profile`, { withCredentials: true });
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setLogin(false);
-    window.location.href = "/register";
-  };
+      if (res.status === 200 && res.data) {
+        setLogin(true);
+      } else {
+        setLogin(false);
+      }
+    } catch (error) {
+        if (error.response && error.response.status === 401) {
+          setLogin(false);
+        } else {
+          console.error("Ошибка при проверке статуса сессии:", error);
+          setLogin(false);
+        }
+      }
+    }
+    checkAuthStatus();
+  }, [port])
+
 
   return (
     <header className={styles.header_main}>
-      <div className={styles.header_logo}>
+      <Link href="/"> <div className={styles.header_logo}>
         <div className={styles.m}>M</div>
         <div className={styles.title_header}>MarketPlace</div>
-      </div>
+      </div></Link>
 
       <div className={styles.input_search}>
         <button className={styles.icon_button} onClick={() => document.querySelector(`.${styles.input_header}`).focus()}>
@@ -38,7 +54,7 @@ export default function Header() {
       </div>
 
       <div className={styles.row_container_header}>
-        <p className={styles.menu_header_txt}>Каталог</p>
+        <Link href='/catalog'><p className={styles.menu_header_txt}>Каталог</p></Link>
         <p className={styles.menu_header_txt}>Продавцы</p>
         <p className={styles.menu_header_txt}>Как продавать</p>
       </div>
@@ -57,10 +73,10 @@ export default function Header() {
               </button>
               {/* onClick={handleLogout}  Выйти можно будет через линый кабинет */}
             </Link>
-            <button className={styles.but_sale}>
+            <Link href="/become-seller"><button className={styles.but_sale}>
               Начать продавать
               {/* Магазин  Если пользователь вошел в аккаунт и открыл свой "магазин", показывать ему эту кнопку */}
-            </button>
+            </button></Link>
           </>
         ) : (
           <>
@@ -69,7 +85,7 @@ export default function Header() {
                 <User width={15} height={15} /> Войти
               </button>
             </Link>
-            <button className={styles.but_sale}>Начать продавать</button>
+            <Link href="/register"><button className={styles.but_sale}>Начать продавать</button></Link>
           </>
         )}
       </div>

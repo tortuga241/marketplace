@@ -32,11 +32,11 @@ export default function Register() {
             const res = await axios.post(`${port}/user/login`, {
                 email,
                 password,
-            });
+            }, { withCredentials: true });
 
             const data = res.data;
-            localStorage.setItem("token", data.token);
             router.push("/")
+            console.log("Ответ сервера при логине:", data);
         } catch (err) {
             if (err.response) {
                 if (err.response.status === 404 || err.response.status === 400 || err.response.status === 401) {
@@ -61,7 +61,7 @@ export default function Register() {
                 login,
                 email,
                 password
-            })
+            }, { withCredentials: true });
             setMessage(res.data.message);
             const data = res.data;
             router.push("/register/verify")

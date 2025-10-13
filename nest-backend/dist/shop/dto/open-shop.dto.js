@@ -14,7 +14,8 @@ const swagger_1 = require("@nestjs/swagger");
 class OpenShopDto {
     title;
     type;
-    discription;
+    description;
+    phone;
 }
 exports.OpenShopDto = OpenShopDto;
 __decorate([
@@ -28,5 +29,9 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'The best shop', description: 'Описание магазина' }),
     __metadata("design:type", String)
-], OpenShopDto.prototype, "discription", void 0);
+], OpenShopDto.prototype, "description", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: '+ 777 333 68 07', description: 'Номер телефона продавца' }),
+    __metadata("design:type", String)
+], OpenShopDto.prototype, "phone", void 0);
 //# sourceMappingURL=open-shop.dto.js.map

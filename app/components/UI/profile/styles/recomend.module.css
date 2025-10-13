@@ -1,0 +1,52 @@
+/* components/UI/styles/TipCard.module.css */
+
+.main_container_reccomends_ps{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background-color: #ffffff;
+    border: 1px solid #dcdcdc;
+    border-radius: 12px;
+    padding: 20px;
+    width: 1170px;
+    height: 60px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.05); 
+    border-left: 5px solid #8e54e9; 
+    overflow: hidden; 
+    margin-bottom: 20px; 
+}
+
+.tip_card_icon_wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%; 
+    background-color: rgba(142, 84, 233, 0.1); 
+    flex-shrink: 0; 
+}
+
+.tip_card_icon {
+    color: #8e54e9;
+}
+
+.tip_card_content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px; 
+}
+
+.tip_card_title {
+    font-size: 16px;
+    font-weight: 600; 
+    color: #333333;
+    margin: 0; 
+}
+
+.tip_card_description {
+    font-size: 14px;
+    color: #666666;
+    margin: 0; 
+    line-height: 1.4;
+}

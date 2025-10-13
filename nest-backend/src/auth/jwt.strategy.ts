@@ -8,13 +8,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
-        (req: Request) => req?.cookies?.jwt,
+        (req: Request) => {
+          return req?.cookies?.jwt;
+        },
       ]),
+      ignoreExpiration: false,
       secretOrKey: process.env.JWT_SECRET || 'supersecret',
     });
   }
 
   async validate(payload: any) {
-    return { userId: payload.userId, email: payload.email };
+    return { id: payload.userId, email: payload.email };
   }
 }

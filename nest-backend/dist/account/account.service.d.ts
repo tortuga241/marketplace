@@ -29,4 +29,9 @@ export declare class UserService {
     logout(res: Response): Promise<{
         message: string;
     }>;
+    getProfile(userId: string): Promise<{
+        login: string;
+        email: string;
+        id: string;
+    }>;
 }

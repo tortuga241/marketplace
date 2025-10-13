@@ -1,11 +1,11 @@
-import { Controller, Post, Get, Body, Res } from "@nestjs/common";
+import { Controller, Get, Post, Body, Res, UseGuards, Request } from '@nestjs/common';
 import { UserService } from './account.service';
 import { RequestRegisterDto } from "./dto/create-account-request.dto";
 import { VerifyRegisterDto } from "./dto/create-account-verify.dto";
 import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { LoginDto } from "./dto/sign-in-account.dto";
-import { ApiBearerAuth } from "@nestjs/swagger";
 import type { Response } from 'express';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('User')
 @Controller('user')
@@ -36,20 +36,54 @@ export class UserController {
     @ApiResponse({ status: 200, description: 'Вход успешен, cookie установлена.' })
     @ApiResponse({ status: 401, description: 'Неверный email или пароль.' })
     async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
-        const data = await this.userService.login(dto);
+        console.log('Login controller started...');
+        try {
+            const data = await this.userService.login(dto);
+            console.log('User service successful. Token:', data.token);
 
-        // ✅ Устанавливаем cookie
-        res.cookie('jwt', data.token, {
-        httpOnly: true,     // нельзя прочитать из JS (безопасность)
-        secure: false,      // true если HTTPS
-        sameSite: 'lax',    // защита от CSRF
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 дней
+            res.cookie('jwt', data.token, {
+                httpOnly: true,
+                secure: process.env.USE_SECURE_COOKIE === 'true',
+                sameSite: 'lax',
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+            });
+            console.log('Cookie has been set on the response object.');
+
+            return {
+                message: 'Вход успешен',
+                user: data.account,
+            };
+        } catch (error) {
+            console.error('Error in login controller:', error.message);
+            throw error;
+        }
+    }
+
+    // Получение данных текущего пользователя
+    @Get('profile') 
+    @UseGuards(AuthGuard('jwt'))
+    @ApiOperation({ summary: 'Получение профиля текущего пользователя' })
+    @ApiResponse({ status: 200, description: 'Данные пользователя.', schema: { example: { id: '...', login: 'testuser', email: 'test@example.com' } } })
+    @ApiResponse({ status: 401, description: 'Пользователь не авторизован.' })
+    getProfile(@Request() req) {
+        const userId = req.user.id;
+        return this.userService.getProfile(userId);
+    }
+
+    //Выход с аккаунта
+    @Post('logout')
+    @ApiOperation({ summary: 'Выход из аккаунта (очистка JWT cookie)' })
+    @ApiResponse({ status: 200, description: 'Выход успешен, cookie удалены' })
+    async logout(@Res({ passthrough: true }) res: Response) {
+        res.cookie('jwt', '', {
+            httpOnly: true,
+            secure: process.env.USE_SECURE_COOKIE === 'true',
+            sameSite: 'lax',
+            maxAge: 0,
+            expires: new Date(Date.now() -1000),
         });
-
-        // ✅ Обязательно возвращаем ответ
         return {
-        message: 'Вход успешен',
-        user: data.account,
-        };
+            message: 'Выход успешен'
+        }
     }
 }

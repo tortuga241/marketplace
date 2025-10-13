@@ -46,11 +46,18 @@ const app_service_1 = require("./app.service");
 const config_1 = require("@nestjs/config");
 const dotenv = __importStar(require("dotenv"));
 const path = __importStar(require("path"));
-dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
-console.log('>>> DATABASE_URL (dotenv):', process.env.DATABASE_URL);
 const account_module_1 = require("./account/account.module");
 const shop_module_1 = require("./shop/shop.module");
+const jwt_cookie_middleware_1 = require("./auth/jwt-cookie.middleware");
+const auth_module_1 = require("./auth/auth.module");
+dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
+console.log('>>> DATABASE_URL (dotenv):', process.env.DATABASE_URL);
 let AppModule = class AppModule {
+    configure(consumer) {
+        consumer
+            .apply(jwt_cookie_middleware_1.JwtCookieMiddleware)
+            .forRoutes('*');
+    }
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
@@ -58,7 +65,8 @@ exports.AppModule = AppModule = __decorate([
         imports: [
             config_1.ConfigModule.forRoot({ isGlobal: true }),
             account_module_1.AccountMoule,
-            shop_module_1.ShopModule
+            shop_module_1.ShopModule,
+            auth_module_1.AuthModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

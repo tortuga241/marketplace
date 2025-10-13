@@ -1,0 +1,84 @@
+.main_container_card_cps {
+    width: 540px;
+    border: 1px solid #dcdcdc;
+    padding: 20px;
+    border-radius: 10px;
+    font-family: 'Roboto';
+    padding: 30px;
+    gap: 20px;
+    transition: 0.3s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.main_container_card_cps:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.col_container_cps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.row_container_cps {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.title_card_cps {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.type_card_cps {
+    font-size: 13px;
+    border: 1px solid #dcdcdc;
+    border-radius: 10px;
+    padding: 5px 10px;
+}
+
+.icon_reviw_cps {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    font-size: 15px;
+    color: gray;
+}
+
+.cost_cps {
+    font-size: 22px;
+    font-weight: 600;
+    color: #6500f3;
+    margin-top: 20px;
+}
+
+.buy_but_cps {
+    width: 490px;
+    height: 40px;
+    font-size: 16px;
+    border: none;
+    background-color: #6500f3;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.buy_but_cps:hover {
+    background-color: #5100c2;
+}
+
+.delete_cps {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #dcdcdc;
+    border-radius: 10px;
+    color: black;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.delete_cps:hover {
+    background-color: rgb(214, 214, 214);
+}

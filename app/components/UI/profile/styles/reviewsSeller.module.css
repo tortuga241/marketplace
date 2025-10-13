@@ -1,0 +1,37 @@
+.main_container_card_rps {
+    width: 1150px;
+    border: 1px solid #dcdcdc;
+    padding: 20px;
+    border-radius: 10px;
+    font-family: 'Roboto';
+    padding: 30px;
+    gap: 20px;
+    transition: 0.3s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.main_container_card_rps:hover {
+    box-shadow: 0 14px 16px rgba(0, 0, 0, 0.08);
+}
+
+.row_container_rps {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.user_login_rps {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.date_rps {
+    font-size: 14px;
+    color: gray;
+    margin-top: 5px;
+}
+
+.review_txt_rps {
+    margin-top: 20px;
+    color: gray;
+}

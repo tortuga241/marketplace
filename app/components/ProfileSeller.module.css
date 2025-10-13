@@ -1,0 +1,148 @@
+.main_container_profile_seller {
+    display: flex;
+    flex-direction: column;
+    font-family: "Roboto";
+    align-items: center;
+    background-color: #FCFDFD;
+}
+
+.container_obert {
+    max-width: 1400px;
+    margin: auto;
+}
+
+.profile_menu_seller {
+    display: flex;
+    flex-direction: row;
+    margin-top: 30px;
+    padding: 5px;
+    background-color: #F4F4F6;
+    border-radius: 10px;
+    width: 420px
+}
+
+.profile_point_ps{
+    width: 140px;
+    height: 30px;
+    text-align: center;
+    align-content: center;
+    background-color: #F4F4F6;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    color: gray;
+    transition: 0.3s;
+}
+
+.active {
+    background-color: white;
+    color: black;
+}
+
+.tabs_container {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.tab_content {
+  margin-top: 25px;
+  padding: 20px;
+  border-radius: 8px;
+  min-height: 150px;
+  transition: 0.3s;
+}
+
+.product_grid_container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px; 
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+.col_container_ps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.add_product_but {
+    width: 160px;
+    height: 40px;
+    color: white;
+    border: none;
+    background-color: #6500f3;
+    border-radius: 10px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.add_product_but:hover {
+    background-color: #4500a5;
+}
+
+.col_container_p {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.row_container_p {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    padding: 20px;
+    align-items: center;
+    align-content: center;
+    border: 1px solid #dcdcdc;
+    border-radius: 10px;
+}
+
+.input_add_review_p {
+    width: 800px;
+    height: 35px;
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: 1px solid #dcdcdc;
+}
+
+/* Оценки */
+.star_icon_active {
+    cursor: pointer;
+    color: #6500f3; 
+    fill: #6500f3;
+    transition: transform 0.1s ease;
+}
+
+.star_icon_inactive {
+    cursor: pointer;
+    color: gray; 
+    fill: none;
+    transition: transform 0.1s ease;
+}
+
+.rating_selection > svg:hover {
+    transform: scale(1.1);
+}
+
+.but_add_reviews_s {
+    width: 120px;
+    height: 40px;
+    background-color: #6500f3;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.but_add_reviews_s:hover {
+    background-color: #4800ac;
+}
+
+.but_add_reviews_s:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

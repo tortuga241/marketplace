@@ -17,13 +17,16 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
     constructor() {
         super({
             jwtFromRequest: passport_jwt_1.ExtractJwt.fromExtractors([
-                (req) => req?.cookies?.jwt,
+                (req) => {
+                    return req?.cookies?.jwt;
+                },
             ]),
+            ignoreExpiration: false,
             secretOrKey: process.env.JWT_SECRET || 'supersecret',
         });
     }
     async validate(payload) {
-        return { userId: payload.userId, email: payload.email };
+        return { id: payload.userId, email: payload.email };
     }
 };
 exports.JwtStrategy = JwtStrategy;

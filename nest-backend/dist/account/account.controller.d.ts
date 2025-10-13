@@ -25,4 +25,12 @@ export declare class UserController {
             email: string;
         };
     }>;
+    getProfile(req: any): Promise<{
+        login: string;
+        email: string;
+        id: string;
+    }>;
+    logout(res: Response): Promise<{
+        message: string;
+    }>;
 }
