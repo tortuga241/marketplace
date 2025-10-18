@@ -2,7 +2,7 @@ import { Controller, Post, Get, Put, Body, Req, UseGuards } from "@nestjs/common
 import { ShopService } from "./shop.service";
 import { OpenShopDto } from "./dto/open-shop.dto";
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport'; // <-- Import the Passport AuthGuard
+import { AuthGuard } from '@nestjs/passport'; 
 
 @ApiTags('Shop')
 @Controller('shop')

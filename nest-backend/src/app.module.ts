@@ -8,6 +8,7 @@ import * as path from 'path';
 //Импорт основных модулей проекта
 import { AccountMoule } from './account/account.module';
 import { ShopModule } from './shop/shop.module';
+import { LotModule } from './lot/lot.module';
 import { JwtCookieMiddleware } from './auth/jwt-cookie.middleware';
 import { AuthModule } from './auth/auth.module';
 
@@ -20,7 +21,8 @@ console.log('>>> DATABASE_URL (dotenv):', process.env.DATABASE_URL);
     ConfigModule.forRoot({ isGlobal: true }),
     AccountMoule,
     ShopModule,
-    AuthModule
+    AuthModule,
+    LotModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Res, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Res, UseGuards, Request, Param } from '@nestjs/common';
 import { UserService } from './account.service';
 import { RequestRegisterDto } from "./dto/create-account-request.dto";
 import { VerifyRegisterDto } from "./dto/create-account-verify.dto";
@@ -68,6 +68,15 @@ export class UserController {
     getProfile(@Request() req) {
         const userId = req.user.id;
         return this.userService.getProfile(userId);
+    }
+
+    //Получение данных профиля по ID
+    @Get(':id') 
+    @ApiOperation({ summary: 'Получение профиля пользователя по ID' })
+    @ApiResponse({ status: 200, description: 'Данные пользователя.' })
+    @ApiResponse({ status: 404, description: 'Пользователь не найден.' })
+    getProfileById(@Param('id') userId: string) {
+        return this.userService.getProfileById(userId);
     }
 
     //Выход с аккаунта

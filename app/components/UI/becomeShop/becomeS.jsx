@@ -1,6 +1,6 @@
 "use client";
 
-import styles from "./styles/becomeS.module.css";
+import styles from "./style/becomeS.module.css";
 import { useState } from "react";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 

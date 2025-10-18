@@ -6,8 +6,8 @@ export declare class ShopService {
         title: string;
         id: string;
         createdAt: Date;
-        phone: string;
         ownerId: string;
+        phone: string;
     }>;
     getShop(ownerId: string): Promise<{
         type: string;
@@ -15,8 +15,8 @@ export declare class ShopService {
         title: string;
         id: string;
         createdAt: Date;
-        phone: string;
         ownerId: string;
+        phone: string;
     } | null>;
     updateShop(ownerId: string, dto: OpenShopDto): Promise<{
         type: string;
@@ -24,7 +24,7 @@ export declare class ShopService {
         title: string;
         id: string;
         createdAt: Date;
-        phone: string;
         ownerId: string;
+        phone: string;
     }>;
 }

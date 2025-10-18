@@ -1,11 +1,13 @@
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
+import { PrismaService } from '../prisma/prisma.service';
 import { RequestRegisterDto } from './dto/create-account-request.dto';
 import { VerifyRegisterDto } from './dto/create-account-verify.dto';
 import { LoginDto } from './dto/sign-in-account.dto';
 export declare class UserService {
     private jwtService;
-    constructor(jwtService: JwtService);
+    private readonly prisma;
+    constructor(jwtService: JwtService, prisma: PrismaService);
     requestRegister(dto: RequestRegisterDto): Promise<{
         message: string;
     }>;
@@ -30,8 +32,27 @@ export declare class UserService {
         message: string;
     }>;
     getProfile(userId: string): Promise<{
+        id: string;
         login: string;
         email: string;
+        shop: {
+            id: string;
+            createdAt: Date;
+            type: string;
+            title: string;
+            description: string;
+        } | null;
+    }>;
+    getProfileById(userId: string): Promise<{
         id: string;
+        login: string;
+        email: string;
+        shop: {
+            id: string;
+            createdAt: Date;
+            type: string;
+            title: string;
+            description: string;
+        } | null;
     }>;
 }

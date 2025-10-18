@@ -1,6 +1,6 @@
 "use client"
 
-import styles from './styles/becomeF.module.css';
+import styles from './style/becomeF.module.css';
 import Link from 'next/link';
 import { Store, FileText, Video, BookOpen, ArrowRight, ArrowLeft } from "lucide-react";
 import { useState, useEffect } from 'react';

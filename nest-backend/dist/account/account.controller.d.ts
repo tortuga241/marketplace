@@ -26,9 +26,28 @@ export declare class UserController {
         };
     }>;
     getProfile(req: any): Promise<{
+        id: string;
         login: string;
         email: string;
+        shop: {
+            id: string;
+            createdAt: Date;
+            type: string;
+            title: string;
+            description: string;
+        } | null;
+    }>;
+    getProfileById(userId: string): Promise<{
         id: string;
+        login: string;
+        email: string;
+        shop: {
+            id: string;
+            createdAt: Date;
+            type: string;
+            title: string;
+            description: string;
+        } | null;
     }>;
     logout(res: Response): Promise<{
         message: string;

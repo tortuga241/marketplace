@@ -14,17 +14,21 @@
     "bcrypt": "^6.0.0",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.544.0",
+    "marked": "^16.4.0",
     "mongodb": "^6.20.0",
     "mongoose": "^8.18.2",
     "next": "15.5.4",
     "nodemailer": "^7.0.6",
+    "qrcode": "^1.5.4",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-markdown": "^10.1.0",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@nestjs/cli": "^11.0.10",
+    "@openapitools/openapi-generator-cli": "^2.25.0",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
     "prisma": "^6.16.2"

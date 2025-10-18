@@ -1,6 +1,6 @@
 "use client"
 
-import styles from './styles/becomeT.module.css';
+import styles from './style/becomeT.module.css';
 import { CheckCircle2, ArrowLeft } from 'lucide-react';
 import axios from 'axios';
 import { useState } from 'react';

@@ -1,0 +1,112 @@
+.product_header_main {
+    width: 1150px;
+    margin: auto;
+    border: 1px solid #dcdcdc;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    margin-top: 30px;
+    font-family: "Roboto";
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.row_container_ph {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.row_container_p {
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+}
+
+.type_product_ph {
+    padding: 5px 10px;
+    border: 1px solid #dcdcdc ;
+    border-radius: 15px;
+    font-size: 14px;
+}
+
+.beta_status {
+    padding: 5px 10px;
+    border: 1px solid #dcdcdc;
+    border-radius: 15px;
+    font-size: 14px;
+}
+
+.title_product_ph {
+    font-size: 40px;
+}
+
+.row_ph {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-content: center;
+    text-align: center;
+    gap: 5px;
+    color: rgb(112, 112, 112);
+}
+
+.col_ph {
+    color: rgb(112, 112, 112);
+    font-size: 16px;
+}
+
+.black_color {
+    color: black;
+}
+
+.black_color_ph {
+    color: black;
+    font-size: 27px;
+    font-weight: 600;
+}
+
+.but_container_ph {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.but_buy_ph {
+    background-color: #6500f3;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    height: 40px;
+    width: 120px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.but_buy_ph:hover {
+    background-color: #5100c3;
+}
+
+.but_bet_version_ph {
+    border: 1px solid #dcdcdc;
+    width: 220px;
+    border-radius: 10px;
+    background-color: white;
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    font-size: 15px;
+}

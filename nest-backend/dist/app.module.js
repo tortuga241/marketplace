@@ -48,6 +48,7 @@ const dotenv = __importStar(require("dotenv"));
 const path = __importStar(require("path"));
 const account_module_1 = require("./account/account.module");
 const shop_module_1 = require("./shop/shop.module");
+const lot_module_1 = require("./lot/lot.module");
 const jwt_cookie_middleware_1 = require("./auth/jwt-cookie.middleware");
 const auth_module_1 = require("./auth/auth.module");
 dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
@@ -66,7 +67,8 @@ exports.AppModule = AppModule = __decorate([
             config_1.ConfigModule.forRoot({ isGlobal: true }),
             account_module_1.AccountMoule,
             shop_module_1.ShopModule,
-            auth_module_1.AuthModule
+            auth_module_1.AuthModule,
+            lot_module_1.LotModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

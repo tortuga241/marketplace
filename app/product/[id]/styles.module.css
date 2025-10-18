@@ -1,0 +1,93 @@
+.main_container_product_pp {
+    font-family: "Roboto";
+}
+.obert_container {
+    display: flex;
+    flex-direction: column;
+    width: 1200px;
+    margin: auto;
+}
+.container_markdown {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    
+    padding: 20px;
+    border: 1px solid #dcdcdc;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    font-family: "Roboto";
+    width: 1150px;
+    border-radius: 10px;
+    margin-top: 30px;
+}
+
+.col_container_pp {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+
+.row_container_pp {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    align-content: center;
+}
+
+
+/* Оценки */
+.input_add_review_p {
+    width: 762px;
+    height: 35px;
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: 1px solid #dcdcdc;
+}
+
+.star_icon_active {
+    cursor: pointer;
+    color: #6500f3; 
+    fill: #6500f3;
+    transition: transform 0.1s ease;
+}
+
+.star_icon_inactive {
+    cursor: pointer;
+    color: gray; 
+    fill: none;
+    transition: transform 0.1s ease;
+}
+
+.rating_selection > svg:hover {
+    transform: scale(1.1);
+}
+
+.but_add_reviews_s {
+    width: 200px;
+    height: 40px;
+    background-color: #6500f3;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.but_add_reviews_s:hover {
+    background-color: #4800ac;
+}
+
+.but_add_reviews_s:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+
+.char_counter {
+    font-size: 12px;
+    color: #666;
+    margin-left: 8px;
+}

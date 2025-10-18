@@ -57,6 +57,9 @@ let UserController = class UserController {
         const userId = req.user.id;
         return this.userService.getProfile(userId);
     }
+    getProfileById(userId) {
+        return this.userService.getProfileById(userId);
+    }
     async logout(res) {
         res.cookie('jwt', '', {
             httpOnly: true,
@@ -113,6 +116,16 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "getProfile", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    (0, swagger_1.ApiOperation)({ summary: 'Получение профиля пользователя по ID' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Данные пользователя.' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Пользователь не найден.' }),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], UserController.prototype, "getProfileById", null);
 __decorate([
     (0, common_1.Post)('logout'),
     (0, swagger_1.ApiOperation)({ summary: 'Выход из аккаунта (очистка JWT cookie)' }),

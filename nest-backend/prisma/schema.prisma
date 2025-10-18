@@ -9,16 +9,19 @@ datasource db {
 
 //ACCOUNT_TAB
 model Account {
-  id          String   @id @default(uuid())
-  login       String   @unique
-  password    String
-  email       String   @unique
-  key         String   @unique
-  shop        Shop?
-  isVerified  Boolean  @default(false)
-  verifyToken String?
+  id           String   @id @default(uuid())
+  login        String   @unique
+  password     String
+  email        String   @unique
+  key          String   @unique
+  shop         Shop?
+  boughtOrders Order[] @relation("BuyerOrders")
+  soldOrders   Order[] @relation("SellerOrders")
+  isVerified   Boolean  @default(false)
+  verifyToken  String?
 }
 
+//ACCOUNT_VERIFY_TAB
 model EmailVerification {
   id        String   @id @default(uuid())
   email     String
@@ -29,6 +32,7 @@ model EmailVerification {
   createdAt DateTime @default(now())
 }
 
+//SHOP_TAB
 model Shop {
   id          String   @id @default(uuid())
   ownerId     String   @unique
@@ -37,9 +41,12 @@ model Shop {
   description String
   owner       Account  @relation(fields: [ownerId], references: [id])
   phone       String
+  lots        Lot[]
+  orders      Order[]
   createdAt   DateTime @default(now())
 }
 
+//LOT_TAB
 model Lot {
   id          String   @id @default(uuid())
   shopId      String
@@ -48,6 +55,44 @@ model Lot {
   cost        String
   title       String
   description String
+  shop        Shop   @relation(fields: [shopId], references: [id])
+  orders      Order[]
+  createdAt   DateTime @default(now())
+}
+
+//ORDER_TAB
+model Order {
+  id              String    @id @default(uuid())
+  code            String    @unique
+  lotId           String    
+  lotSnapshot     Json?     
+  sellerAccountId String    
+  shopId          String    
+  buyerAccountId  String    
+  cost            Float     
+  status          String    
+  lot             Lot       @relation(fields: [lotId], references: [id])
+  shop            Shop      @relation(fields: [shopId], references: [id])
+  buyer           Account   @relation("BuyerOrders", fields: [buyerAccountId], references: [id])
+  seller          Account   @relation("SellerOrders", fields: [sellerAccountId], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+//ORDER_VERIFY_TAB
+model OrderVerification {
+  id                String    @id @default(uuid())
+  verificationCode  String 
+  expiresAt         DateTime  
+  lotId             String
+  sellerAccountId   String
+  shopId            String
+  buyerAccountId    String
+  lotSnapshot       Json?
+  cost              Float
+  status            String    
+  buyerEmail        String    
+  createdAt         DateTime  @default(now())
 }
 
 model Article {
@@ -67,16 +112,6 @@ model Review {
   rating      Int
   description String
   createdAt   DateTime @default(now())
-}
-
-model Order {
-  id        String   @id @default(uuid())
-  code      String   @unique
-  shopId    String
-  accountId String
-  cost      String
-  status    String
-  createdAt DateTime @default(now())
 }
 
 model Chat {

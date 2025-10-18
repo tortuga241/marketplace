@@ -9,8 +9,8 @@ export declare class ShopController {
         title: string;
         id: string;
         createdAt: Date;
-        phone: string;
         ownerId: string;
+        phone: string;
     }>;
     getShop(req: any): Promise<{
         type: string;
@@ -18,8 +18,8 @@ export declare class ShopController {
         title: string;
         id: string;
         createdAt: Date;
-        phone: string;
         ownerId: string;
+        phone: string;
     } | null>;
     updateShop(req: any, dto: OpenShopDto): Promise<{
         type: string;
@@ -27,7 +27,7 @@ export declare class ShopController {
         title: string;
         id: string;
         createdAt: Date;
-        phone: string;
         ownerId: string;
+        phone: string;
     }>;
 }

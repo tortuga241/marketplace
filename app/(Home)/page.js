@@ -2,9 +2,9 @@ import Header from "../components/Header";
 import styles from './page.module.css';
 import { Search, ArrowRight, TrendingUp, Users, Star, Zap, Award } from "lucide-react";
 
-import Category from "../components/UI/category";
-import ProductCart from "../components/UI/product";
-import SellerCart from "../components/UI/seller";
+import Category from "../components/UI/home/category";
+import ProductCart from "../components/UI/home/product";
+import SellerCart from "../components/UI/home/seller";
 import Footer from "../components/footer";
 
 

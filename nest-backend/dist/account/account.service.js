@@ -44,31 +44,32 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
-const client_1 = require("@prisma/client");
 const bcrypt = __importStar(require("bcrypt"));
 const uuid_1 = require("uuid");
 const nodemailer = __importStar(require("nodemailer"));
 const jwt_1 = require("@nestjs/jwt");
-const prisma = new client_1.PrismaClient();
+const prisma_service_1 = require("../prisma/prisma.service");
 let UserService = class UserService {
     jwtService;
-    constructor(jwtService) {
+    prisma;
+    constructor(jwtService, prisma) {
         this.jwtService = jwtService;
+        this.prisma = prisma;
     }
     async requestRegister(dto) {
         const { login, email, password } = dto;
         if (!login || !email || !password) {
             throw new common_1.BadRequestException('Все поля обязательны');
         }
-        const existingEmail = await prisma.account.findUnique({ where: { email } });
+        const existingEmail = await this.prisma.account.findUnique({ where: { email } });
         if (existingEmail)
             throw new common_1.BadRequestException('Email уже используется');
-        const existingLogin = await prisma.account.findFirst({ where: { login } });
+        const existingLogin = await this.prisma.account.findFirst({ where: { login } });
         if (existingLogin)
             throw new common_1.BadRequestException('Логин уже используется');
         const hashedPassword = await bcrypt.hash(password, 10);
         const code = String(Math.floor(100000 + Math.random() * 900000));
-        await prisma.emailVerification.create({
+        await this.prisma.emailVerification.create({
             data: {
                 login,
                 email,
@@ -105,23 +106,23 @@ let UserService = class UserService {
         if (!code) {
             throw new common_1.BadRequestException('Email и код обязательны');
         }
-        const pending = await prisma.emailVerification.findFirst({
+        const pending = await this.prisma.emailVerification.findFirst({
             where: { code },
         });
         if (!pending)
             throw new common_1.BadRequestException('Неверный код');
-        const existingLogin = await prisma.account.findUnique({
+        const existingLogin = await this.prisma.account.findUnique({
             where: { login: pending.login },
         });
         if (existingLogin)
             throw new common_1.BadRequestException('Логин уже используется');
-        const existingEmail = await prisma.account.findUnique({
+        const existingEmail = await this.prisma.account.findUnique({
             where: { email: pending.email },
         });
         if (existingEmail)
             throw new common_1.BadRequestException('Email уже используется');
         try {
-            const newAccount = await prisma.account.create({
+            const newAccount = await this.prisma.account.create({
                 data: {
                     login: pending.login,
                     email: pending.email,
@@ -129,7 +130,7 @@ let UserService = class UserService {
                     key: pending.key,
                 },
             });
-            await prisma.emailVerification.delete({ where: { id: pending.id } });
+            await this.prisma.emailVerification.delete({ where: { id: pending.id } });
             return {
                 message: 'Регистрация завершена',
                 account: {
@@ -147,19 +148,15 @@ let UserService = class UserService {
         }
     }
     async login(dto) {
-        console.log('DTO:', dto);
         const { email, password } = dto;
-        const account = await prisma.account.findUnique({ where: { email } });
-        console.log('Account:', account);
+        const account = await this.prisma.account.findUnique({ where: { email } });
         if (!account)
             throw new common_1.UnauthorizedException('Неверный email или пароль');
         const isPasswordValid = await bcrypt.compare(password, account.password);
         if (!isPasswordValid)
             throw new common_1.UnauthorizedException('Неверный email или пароль');
-        console.log('Password:', isPasswordValid);
         const payload = { userId: account.id, email: account.email };
         const token = this.jwtService.sign(payload);
-        console.log(token);
         return {
             message: 'Вход успешен',
             token,
@@ -175,7 +172,7 @@ let UserService = class UserService {
         return { message: 'Вы вышли из аккаунта' };
     }
     async getProfile(userId) {
-        const account = await prisma.account.findUnique({
+        const account = await this.prisma.account.findUnique({
             where: {
                 id: userId,
             },
@@ -183,6 +180,15 @@ let UserService = class UserService {
                 id: true,
                 login: true,
                 email: true,
+                shop: {
+                    select: {
+                        id: true,
+                        title: true,
+                        description: true,
+                        type: true,
+                        createdAt: true
+                    }
+                },
             },
         });
         if (!account) {
@@ -190,10 +196,36 @@ let UserService = class UserService {
         }
         return account;
     }
+    async getProfileById(userId) {
+        const account = await this.prisma.account.findUnique({
+            where: {
+                id: userId,
+            },
+            select: {
+                id: true,
+                login: true,
+                email: true,
+                shop: {
+                    select: {
+                        id: true,
+                        title: true,
+                        description: true,
+                        type: true,
+                        createdAt: true
+                    }
+                },
+            },
+        });
+        if (!account) {
+            throw new common_1.NotFoundException(`Пользователь с ID "${userId}" не найден.`);
+        }
+        return account;
+    }
 };
 exports.UserService = UserService;
 exports.UserService = UserService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [jwt_1.JwtService])
+    __metadata("design:paramtypes", [jwt_1.JwtService,
+        prisma_service_1.PrismaService])
 ], UserService);
 //# sourceMappingURL=account.service.js.map

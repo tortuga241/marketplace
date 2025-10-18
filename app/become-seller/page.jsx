@@ -5,9 +5,9 @@ import styles from "./style.module.css";
 import { CheckCircle2 } from "lucide-react"; 
 import axios from "axios";
 
-import BecomeF from "../components/UI/becomeF";
-import BecomeS from "../components/UI/becomeS";
-import BecomeT from "../components/UI/becomeT";
+import BecomeF from "../components/UI/becomeShop/becomeF";
+import BecomeS from "../components/UI/becomeShop/becomeS";
+import BecomeT from "../components/UI/becomeShop/becomeT";
 
 export default function BecomeSeller() {
   const [step, setStep] = useState(1);

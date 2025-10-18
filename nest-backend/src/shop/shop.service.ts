@@ -43,7 +43,7 @@ export class ShopService {
 
   //Получить магазин
   async getShop(ownerId: string) {
-    return prisma.shop.findUnique({ where: { ownerId } });
+    return prisma.shop.findUnique({ where: { ownerId }});
   }
 
   async updateShop(ownerId: string, dto: OpenShopDto) {

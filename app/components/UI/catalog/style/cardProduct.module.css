@@ -1,0 +1,103 @@
+.main_container_card_cp {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #dcdcdc;
+    border-radius: 10px;
+    padding: 20px;
+    gap: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.row_container_cp {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    align-items: center;
+    align-content: center;
+}
+
+.type_txt_cp_card {
+    padding: 5px 10px;
+    border: 1px solid #dcdcdc;
+    border-radius: 15px;
+    font-size: 14px;
+}
+
+.col_container_cp {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.title_card_cd {
+    font-size: 23px;
+}
+
+.description_card_cp {
+    color: gray;
+    font-size: 14px;
+}
+
+.row_container_cp_rating {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.num_rating {
+    font-size: 15px;
+}
+
+.num_rating_cp {
+    color: gray;
+    font-size: 14px;
+}
+
+.decoration_container_cp {
+    height: 1px;
+    background-color: rgb(231, 231, 231);
+    border-radius: 20px;
+    margin-bottom: 5px;
+    margin-top: 10px;
+}
+.cost_cp {
+    font-size: 23px;
+    font-weight: 600;
+    color: #6500f3;
+}
+
+.but_buy_cp {
+    border: none;
+    border-radius: 10px;
+    color: white;
+    background-color: #6500f3;
+    width: 140px;
+    height: 40px;
+    font-size: 14px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.but_buy_cp:hover {
+    background-color: rgb(79, 0, 190)
+}
+
+.icon_card_cp {
+    cursor: pointer;
+}
+
+.icon_card_cp:hover {
+    cursor: pointer;
+    fill: red;
+    color: red;
+}
