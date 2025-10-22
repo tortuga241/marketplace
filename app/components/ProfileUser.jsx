@@ -1,82 +1,37 @@
-// "use client"
-
-// import styles from './ProfileUser.module.css';
-// import ProfileUser from './UI/profile/profileUser';
-// import Header from './Header';
-// import { Heart, Package, ShoppingBag } from 'lucide-react';
-// import { useState } from 'react';
-
-// //Профиль покупателя и продавца
-// import OrderProfileCart from './UI/profile/orderProfile';
-// import HistoryCart from './UI/profile/historyBuy';;
-// import FavoriteCard from './UI/profile/favor';
-
-// export default function ProfilePage() {
-
-//     const [active, setActive] = useState('orders'); 
-//     const [ifShop, setIfShop] = useState(false);
-    
-//     return (
-//         <div className={styles.main_container_profile}>
-//             <Header />
-//             <div className={styles.container_obert}>
-//                 <ProfileUser />
-//                 <div className={styles.profile_menu_user}>
-//                     <div className={`${styles.profile_point} ${active === 'orders' ? styles.active : ''}`}
-//                         onClick={() => setActive('orders')}><Package width={14} height={14}/> Мои заказы</div>
-//                     <div className={`${styles.profile_point_2} ${active === 'history' ? styles.active : ''}`}
-//                         onClick={() => setActive('history')}><ShoppingBag width={14} height={14}/> История покупок</div>
-//                     <div className={`${styles.profile_point} ${active === 'favorites' ? styles.active : ''}`}
-//                         onClick={() => setActive('favorites')}><Heart width={14} height={14}/> Избранное</div>
-//                 </div>
-//                 {/* Контейнеры контента */}
-//                 {active === 'orders' && (
-//                     <div className={styles.order_list_profile}>
-//                         <OrderProfileCart />
-//                     </div>
-//                 )}
-
-//                 {active === 'history' && (
-//                     <div className={styles.order_list_profile}>
-//                         <HistoryCart />
-//                     </div>
-//                 )}
-
-//                 {active === 'favorites' && (
-//                     <div className={styles.favor_list_profile}>
-//                         <FavoriteCard />
-//                     </div>
-//                 )}
-//             </div>
-//         </div>
-//     )
-// };
-
-
-
-// components/ProfileUser.js (Компонент логики покупателя)
-
 "use client"
 
 import styles from './ProfileUser.module.css';
-import ProfileUserUI from './UI/profile/profileUser'; // Переименовал, чтобы не было путаницы
+import ProfileUserUI from './UI/profile/profileUser'; 
 import Header from './Header';
 import { Heart, Package, ShoppingBag } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 //Профиль покупателя и продавца
 import OrderProfileCart from './UI/profile/orderProfile';
-import HistoryCart from './UI/profile/historyBuy';;
+import HistoryCart from './UI/profile/historyBuy';
 import FavoriteCard from './UI/profile/favor';
 
+export default function BuyerProfile({ user, isOwner, orders = [], sales = [], isLoading = false, onRefreshOrders }) {
 
-// Принимаем user и isOwner
-export default function BuyerProfile({ user, isOwner }) {
+    console.log('BuyerProfile received:', { 
+        user, 
+        isOwner, 
+        ordersCount: orders.length, 
+        salesCount: sales.length,
+        orders,
+        sales
+    });
 
-    // Устанавливаем вкладку по умолчанию: Заказы (для владельца) или Избранное (для гостя)
+    const allOrders = [...orders.map(order => ({ ...order, type: 'purchase' })), ...sales.map(order => ({ ...order, type: 'sale' }))];
+    const sortedOrders = allOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    
+    // Фильтруем только покупки для истории
+    const purchaseHistory = orders.filter(order => 
+        order.status === 'completed' || order.status === 'delivered'
+    );
+
     const [active, setActive] = useState(isOwner ? 'orders' : 'favorites'); 
     
-    // Если это не владелец, всегда показываем только Избранное (если оно публично)
     useEffect(() => {
         if (!isOwner && active !== 'favorites') {
             setActive('favorites');
@@ -85,40 +40,74 @@ export default function BuyerProfile({ user, isOwner }) {
         }
     }, [isOwner]);
     
-    // Приватные разделы
     const showPrivateSections = isOwner; 
 
     return (
         <div className={styles.main_container_profile}>
             <Header />
             <div className={styles.container_obert}>
-                {/* Передаем user и isOwner в UI компонент */}
                 <ProfileUserUI user={user} isOwner={isOwner} /> 
                 <div className={styles.profile_menu_user}>
-                    {/* Скрываем "Мои заказы" и "Историю покупок" для не-владельца */}
                     {showPrivateSections && (
                         <>
                             <div className={`${styles.profile_point} ${active === 'orders' ? styles.active : ''}`}
-                                onClick={() => setActive('orders')}><Package width={14} height={14}/> Мои заказы</div>
+                                onClick={() => setActive('orders')}>
+                                <Package width={14} height={14}/> Мои заказы ({allOrders.length})
+                            </div>
                             <div className={`${styles.profile_point_2} ${active === 'history' ? styles.active : ''}`}
-                                onClick={() => setActive('history')}><ShoppingBag width={14} height={14}/> История покупок</div>
+                                onClick={() => setActive('history')}>
+                                <ShoppingBag width={14} height={14}/> История покупок ({purchaseHistory.length})
+                            </div>
                         </>
                     )}
-                    {/* Избранное показываем всегда (или по вашей логике) */}
                     <div className={`${styles.profile_point} ${active === 'favorites' ? styles.active : ''}`}
-                        onClick={() => setActive('favorites')}><Heart width={14} height={14}/> Избранное</div>
+                        onClick={() => setActive('favorites')}>
+                        <Heart width={14} height={14}/> Избранное
+                    </div>
                 </div>
+                
                 {/* Контейнеры контента */}
-                {/* Показываем приватный контент только владельцу */}
                 {showPrivateSections && active === 'orders' && (
                     <div className={styles.order_list_profile}>
-                        <OrderProfileCart />
+                        {isLoading && <div className={styles.loading}>Загрузка заказов...</div>}
+                        {!isLoading && sortedOrders.length === 0 && (
+                            <div className={styles.empty}>
+                                <p>У вас пока нет заказов</p>
+                            </div>
+                        )}
+                        {!isLoading && sortedOrders.length > 0 && (
+                            <div className={styles.orders_container}>
+                                <h3>Все заказы</h3>
+                                {sortedOrders.map(order => (
+                                    <OrderProfileCart 
+                                        key={`${order.type}-${order.id}`} 
+                                        order={order}
+                                    />
+                                ))}
+                            </div>
+                        )}
                     </div>
                 )}
 
                 {showPrivateSections && active === 'history' && (
                     <div className={styles.order_list_profile}>
-                        <HistoryCart />
+                        {isLoading && <div className={styles.loading}>Загрузка истории...</div>}
+                        {!isLoading && purchaseHistory.length === 0 && (
+                            <div className={styles.empty}>
+                                <p>У вас пока нет истории покупок</p>
+                            </div>
+                        )}
+                        {!isLoading && purchaseHistory.length > 0 && (
+                            <div className={styles.orders_container}>
+                                <h3>История покупок</h3>
+                                {purchaseHistory.map(order => (
+                                    <HistoryCart 
+                                        key={order.id} 
+                                        order={order}
+                                    />
+                                ))}
+                            </div>
+                        )}
                     </div>
                 )}
                 
@@ -128,7 +117,6 @@ export default function BuyerProfile({ user, isOwner }) {
                     </div>
                 )}
                 
-                {/* Сообщение, если гость пытается просмотреть приватный раздел */}
                 {!showPrivateSections && active !== 'favorites' && (
                      <div className={styles.order_list_profile}>
                         <p>Для просмотра заказов необходимо войти в этот аккаунт.</p>
@@ -136,5 +124,5 @@ export default function BuyerProfile({ user, isOwner }) {
                 )}
             </div>
         </div>
-    )
-};
+    );
+}

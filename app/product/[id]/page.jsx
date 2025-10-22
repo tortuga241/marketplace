@@ -7,6 +7,7 @@ import ReactMarkdown from 'react-markdown';
 
 import Header from '../../components/Header';
 import ProductHeader from '../../components/UI/productHeader/productHeader';
+import Footer from '@/app/components/footer';
 import axios from 'axios';
 import { useParams } from 'next/navigation';
 
@@ -63,6 +64,7 @@ export default function ProductPage() {
             <div className={styles.main_container_product_pp}>
                 <Header />
                 <div className={styles.loading}>Загрузка...</div>
+                <Footer />
             </div>
         );
     }
@@ -71,6 +73,7 @@ export default function ProductPage() {
             <div className={styles.main_container_product_pp}>
                 <Header />
                 <div className={styles.error}>Ошибка: {error}</div>
+                <Footer />
             </div>
         );
     }
@@ -79,6 +82,7 @@ export default function ProductPage() {
             <div className={styles.main_container_product_pp}>
                 <Header />
                 <div className={styles.error}>Продукт не найден</div>
+                <Footer />
             </div>
         );
     }
@@ -104,6 +108,7 @@ export default function ProductPage() {
                     <div className={styles.reviews_container_pp}></div>
                 </div>
             </div>
+            <Footer />
         </div>
     )
 }

@@ -32,27 +32,27 @@ export declare class UserService {
         message: string;
     }>;
     getProfile(userId: string): Promise<{
-        id: string;
-        login: string;
-        email: string;
         shop: {
+            type: string;
+            description: string;
+            title: string;
             id: string;
             createdAt: Date;
-            type: string;
-            title: string;
-            description: string;
         } | null;
+        login: string;
+        email: string;
+        id: string;
     }>;
     getProfileById(userId: string): Promise<{
-        id: string;
-        login: string;
-        email: string;
         shop: {
+            type: string;
+            description: string;
+            title: string;
             id: string;
             createdAt: Date;
-            type: string;
-            title: string;
-            description: string;
         } | null;
+        login: string;
+        email: string;
+        id: string;
     }>;
 }

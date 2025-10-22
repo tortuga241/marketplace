@@ -9,16 +9,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.orderDto = void 0;
+exports.ResendCodeDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
-class orderDto {
-    verificationCode;
+class ResendCodeDto {
+    verificationId;
 }
-exports.orderDto = orderDto;
+exports.ResendCodeDto = ResendCodeDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: '534890', description: '6-значный код подтверждения с почты' }),
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)({ description: 'ID записи о верификации (из /initiate)' }),
+    (0, class_validator_1.IsUUID)(),
     __metadata("design:type", String)
-], orderDto.prototype, "verificationCode", void 0);
-//# sourceMappingURL=orderVer.dto.js.map
+], ResendCodeDto.prototype, "verificationId", void 0);
+//# sourceMappingURL=order-resend.dto.js.map

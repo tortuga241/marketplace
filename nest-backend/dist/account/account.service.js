@@ -128,6 +128,7 @@ let UserService = class UserService {
                     email: pending.email,
                     password: pending.password,
                     key: pending.key,
+                    isVerified: true
                 },
             });
             await this.prisma.emailVerification.delete({ where: { id: pending.id } });

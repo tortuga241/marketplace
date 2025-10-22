@@ -1,12 +1,17 @@
+"use client"
+
 import styles from './style/styles.module.css';
-import { Download, ShoppingCart } from 'lucide-react';
+import { Download, ShoppingCart, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function ProductHeader({ product }) {
+    
+    const router = useRouter();
 
     //Функция для покупки товара
     const handleBuyLot = () => {
-        window.location.href = "/buy-product"
+        router.push(`/buy-product?lotId=${product.id}`);
     }
 
     //Формирование даты добавления товара
@@ -19,7 +24,6 @@ export default function ProductHeader({ product }) {
     const sellerId = product.accountId;
     const sellerLogin = product.shop.owner.login
     console.log(sellerId);
-
 
 
     return (

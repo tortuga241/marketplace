@@ -11,6 +11,7 @@ import { ShopModule } from './shop/shop.module';
 import { LotModule } from './lot/lot.module';
 import { JwtCookieMiddleware } from './auth/jwt-cookie.middleware';
 import { AuthModule } from './auth/auth.module';
+import { OrdersModule } from './order/order.module';
 
 //Принудительно указываем на путь к файлу .env так как nestJS его не видит
 dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
@@ -22,7 +23,8 @@ console.log('>>> DATABASE_URL (dotenv):', process.env.DATABASE_URL);
     AccountMoule,
     ShopModule,
     AuthModule,
-    LotModule
+    LotModule,
+    OrdersModule
   ],
   controllers: [AppController],
   providers: [AppService],

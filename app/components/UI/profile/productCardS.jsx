@@ -27,7 +27,7 @@ export default function ProductCardS({ lots, isOwner, onDelete }) {
                 <div className={styles.row_container_cps}>
                     <button className={styles.buy_but_cps} style={{flexGrow: "1"}}>Купить</button>
                     {isOwner && (
-                        <button onClick={handleDeleteClick} className={styles.delete_cps} style={{marginLeft: "5px"}}><Trash2 width={16} height={16} /></button>
+                        <button onClick={() => handleDeleteClick(lot.id)} className={styles.delete_cps} style={{marginLeft: "5px"}}><Trash2 width={16} height={16} /></button>
                     )}
                 </div>
             </div>

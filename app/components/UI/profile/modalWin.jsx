@@ -19,11 +19,11 @@ export default function CreateProductModal({ onClose, shopId, accountId, onLotCr
     const host = "http://localhost:3001"
 
     const productTypes = [
-        { value: 'Видео', label: 'Видео' },
-        { value: 'Документ', label: 'Документ' },
-        { value: 'Статья', label: 'Статья' },
-        { value: 'Код', label: 'Код' },
-        { value: 'Аудио', label: 'Аудио' },
+        { value: 'video', label: 'Видео' },
+        { value: 'document', label: 'Документ' },
+        { value: 'article', label: 'Статья' },
+        { value: 'code', label: 'Код' },
+        { value: 'audio', label: 'Аудио' },
     ];
 
 

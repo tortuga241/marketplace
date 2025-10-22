@@ -9,17 +9,23 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateOrderDto = void 0;
-const class_validator_1 = require("class-validator");
+exports.CompleteOrderDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
-class CreateOrderDto {
-    lotId;
+const class_validator_1 = require("class-validator");
+class CompleteOrderDto {
+    verificationId;
+    code;
 }
-exports.CreateOrderDto = CreateOrderDto;
+exports.CompleteOrderDto = CompleteOrderDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'a1b2c3d4-e5f6-7890-1234-567890abcdef', description: 'ID лота, который хотят купить' }),
+    (0, swagger_1.ApiProperty)({ description: 'ID записи о верификации (из /initiate)' }),
     (0, class_validator_1.IsUUID)(),
-    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], CreateOrderDto.prototype, "lotId", void 0);
-//# sourceMappingURL=order-create.dto.js.map
+], CompleteOrderDto.prototype, "verificationId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ description: '6-значный код из письма' }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.Length)(6, 6, { message: 'Код должен состоять из 6 цифр' }),
+    __metadata("design:type", String)
+], CompleteOrderDto.prototype, "code", void 0);
+//# sourceMappingURL=order-complete.dto.js.map

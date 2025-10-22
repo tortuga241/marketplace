@@ -26,28 +26,28 @@ export declare class UserController {
         };
     }>;
     getProfile(req: any): Promise<{
-        id: string;
-        login: string;
-        email: string;
         shop: {
+            type: string;
+            description: string;
+            title: string;
             id: string;
             createdAt: Date;
-            type: string;
-            title: string;
-            description: string;
         } | null;
+        login: string;
+        email: string;
+        id: string;
     }>;
     getProfileById(userId: string): Promise<{
-        id: string;
-        login: string;
-        email: string;
         shop: {
+            type: string;
+            description: string;
+            title: string;
             id: string;
             createdAt: Date;
-            type: string;
-            title: string;
-            description: string;
         } | null;
+        login: string;
+        email: string;
+        id: string;
     }>;
     logout(res: Response): Promise<{
         message: string;

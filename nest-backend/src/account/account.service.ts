@@ -301,6 +301,7 @@ export class UserService {
                     email: pending.email,
                     password: pending.password,
                     key: pending.key,
+                    isVerified: true
                 },
             });
 

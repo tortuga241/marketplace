@@ -8,6 +8,7 @@ import { useSearchParams } from 'next/navigation';
 
 //Import comps
 import CardProduct from '../components/UI/catalog/cardProduct';
+import Footer from '../components/footer';
 
 export default function CatalogPage() {
 
@@ -385,6 +386,7 @@ const parsePrice = (priceString) => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

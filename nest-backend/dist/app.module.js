@@ -51,6 +51,7 @@ const shop_module_1 = require("./shop/shop.module");
 const lot_module_1 = require("./lot/lot.module");
 const jwt_cookie_middleware_1 = require("./auth/jwt-cookie.middleware");
 const auth_module_1 = require("./auth/auth.module");
+const order_module_1 = require("./order/order.module");
 dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 console.log('>>> DATABASE_URL (dotenv):', process.env.DATABASE_URL);
 let AppModule = class AppModule {
@@ -68,7 +69,8 @@ exports.AppModule = AppModule = __decorate([
             account_module_1.AccountMoule,
             shop_module_1.ShopModule,
             auth_module_1.AuthModule,
-            lot_module_1.LotModule
+            lot_module_1.LotModule,
+            order_module_1.OrdersModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
