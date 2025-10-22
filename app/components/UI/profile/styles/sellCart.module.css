@@ -1,0 +1,99 @@
+.main_container_order_cart {
+    border: 1px solid #dcdcdc;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    background-color: #fff;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+}
+
+.main_container_order_cart:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.order_row_container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.col_container {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.order_code {
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.order_date {
+    font-size: 15px;
+    color: gray;
+}
+
+.status_order_order {
+    border: solid gray;
+    align-content: center;
+    padding: 5px;
+    height: 15px;
+    border-radius: 15px;
+    font-size: 13px;
+}
+
+.status_order {
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 5px 10px;
+    align-content: center;
+    font-size: 14px;
+}
+
+.order_cost {
+    color: rgb(106, 0, 255);
+    font-size: 25px;
+    font-weight: 600;
+}
+
+.order_actions {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.action_button_primary {
+    border: 1px solid rgb(106, 0, 255);
+    background-color: white;
+    width: 160px;
+    height: 35px;
+    font-size: 16px;
+    border-radius: 10px;
+    color: black;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.action_button_primary:hover {
+    background-color: rgb(106, 0, 255);
+    color: white;
+}
+
+.action_button_secondary {
+    border: none;
+    border-radius: 10px;
+    width: 130px;
+    height: 35px;
+    background-color: rgb(190, 0, 0);
+    cursor: pointer;
+    transition: 0.3s;
+    color: white;
+}
+
+.action_button_secondary:hover {
+    background-color: rgb(145, 0, 0);
+}

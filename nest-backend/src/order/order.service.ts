@@ -7,6 +7,13 @@ import { ResendCodeDto } from './dto/order-resend.dto';
 import { randomBytes } from 'crypto';
 import { Prisma } from '@prisma/client';
 
+export interface MinimalLotSnapshot extends Prisma.JsonObject {
+  title: string;
+  description: string;
+  type: string;
+  createdAt: string;
+}
+
 @Injectable()
 export class OrdersService { constructor( private prisma: PrismaService, private mailService: MailService,) {}
 
@@ -58,14 +65,12 @@ export class OrdersService { constructor( private prisma: PrismaService, private
     //Создаем запись для верификации
     const code = this.generateVerificationCode();
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 минут
-    const lotSnapshot = lotDetails;
 
-    //Сохраняем только необходимые данные для чека
-    const minimalLotSnapshot = {
+    const minimalLotSnapshot: MinimalLotSnapshot = {
       title: lot.title,
       description: lot.description,
       type: lot.type,
-      createdAt: lot.createdAt
+      createdAt: lot.createdAt.toISOString()
     };
 
     const verification = await this.prisma.orderVerification.create({
@@ -76,7 +81,7 @@ export class OrdersService { constructor( private prisma: PrismaService, private
         sellerAccountId: sellerAccountId,
         shopId: shopId,
         buyerAccountId: buyerAccountId,
-        lotSnapshot:  minimalLotSnapshot,
+        lotSnapshot: minimalLotSnapshot as Prisma.InputJsonValue,
         cost: parseFloat(cost),
         status: 'PENDING',
         buyerEmail: buyer.email,
@@ -132,6 +137,11 @@ export class OrdersService { constructor( private prisma: PrismaService, private
       throw new InternalServerErrorException('Продавец лота не найден.');
     }
 
+  const buyer = await this.prisma.account.findUnique({
+      where: { id: buyerAccountId },
+      select: { login: true },
+    });
+
     const orderCode = randomBytes(4).toString('hex').toUpperCase();
 
     try {
@@ -148,42 +158,59 @@ export class OrdersService { constructor( private prisma: PrismaService, private
         },
       });
 
-      //Создаем минимизированные данные для чека
-      const minimalOrderDataSeller = {
+      const orderDataForEmail = {
         code: newOrder.code,
         cost: newOrder.cost,
         createdAt: newOrder.createdAt,
         sellerLogin: seller.login
       };
 
+      // ИЗМЕНЕНИЕ: Приводим тип для lotSnapshot
+      const lotSnapshot = this.parseLotSnapshot(verification.lotSnapshot);
+
       //Отправляем чеки
       this.mailService
         .sendOrderConfirmationToBuyer(
           verification.buyerEmail,
-          newOrder,
-          verification.lotSnapshot,
+          orderDataForEmail,
+          lotSnapshot,
         )
         .catch((err) => console.error('Ошибка отправки письма покупателю:', err));
 
       this.mailService
         .sendOrderNotificationToSeller(
           seller.email,
-          newOrder,
-          verification.lotSnapshot,
+          orderDataForEmail,
+          lotSnapshot,
+          buyer?.login, // ИЗМЕНЕНИЕ: Передаем логин покупателя
         )
         .catch((err) => console.error('Ошибка отправки письма продавцу:', err));
 
-      //Удаляем временную запись верификации
-      await this.prisma.orderVerification.delete({ where: { id: verificationId }});
+        await this.prisma.orderVerification.delete({ where: { id: verificationId }});
 
       return newOrder;
 
     } catch (error) {
-      if (error.code === 'P2002') {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
         throw new ForbiddenException('Ошибка создания заказа. Попробуйте снова.');
       }
       throw new InternalServerErrorException('Не удалось создать заказ');
     }
+  }
+
+  private parseLotSnapshot(lotSnapshot: Prisma.JsonValue | null): MinimalLotSnapshot {
+    if (!lotSnapshot || typeof lotSnapshot !== 'object' || Array.isArray(lotSnapshot)) {
+      throw new Error('Invalid lot snapshot data');
+    }
+
+    const snapshot = lotSnapshot as Record<string, unknown>;
+    
+    return {
+      title: String(snapshot.title || ''),
+      description: String(snapshot.description || ''),
+      type: String(snapshot.type || ''),
+      createdAt: String(snapshot.createdAt || '')
+    };
   }
 
   //POST /resend 

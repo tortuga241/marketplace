@@ -48,7 +48,9 @@ let LotService = class LotService {
     ;
     async getAllLots() {
         try {
-            const lot = await prisma.lot.findMany();
+            const lot = await prisma.lot.findMany({
+                where: { isHidden: false }
+            });
             return lot;
         }
         catch (error) {
@@ -59,7 +61,7 @@ let LotService = class LotService {
     ;
     async getLotById(id) {
         const lot = await prisma.lot.findUnique({
-            where: { id: id },
+            where: { id: id, isHidden: false },
             include: {
                 shop: {
                     include: {
@@ -88,6 +90,7 @@ let LotService = class LotService {
             const lots = await prisma.lot.findMany({
                 where: {
                     accountId: accountId,
+                    isHidden: false
                 }
             });
             return lots;
@@ -97,35 +100,64 @@ let LotService = class LotService {
             throw new common_1.InternalServerErrorException('Не удалось получить список лотов для этого продавца.');
         }
     }
-    async deleteLotById(lotId, accountId) {
+    async deleteOrHideLotById(lotId, accountId) {
         try {
             const lot = await prisma.lot.findUnique({
-                where: { id: lotId }
+                where: { id: lotId },
+                include: {
+                    _count: {
+                        select: { orders: true }
+                    }
+                }
             });
             if (!lot) {
                 throw new common_1.NotFoundException(`Лот с ID "${lotId}" не найден.`);
             }
             if (lot.accountId !== accountId) {
-                console.log(accountId);
-                console.log(lot.accountId);
                 throw new common_1.ForbiddenException('У вас нет прав для удаления этого лота.');
             }
-            const deletedLot = await prisma.lot.delete({
-                where: { id: lotId }
-            });
-            console.log('Лот успешно удален', deletedLot);
-            return {
-                message: 'Лот успешно удален',
-                id: deletedLot.id,
-                title: deletedLot.title
-            };
+            if (lot._count.orders > 0) {
+                const hiddenLot = await prisma.lot.update({
+                    where: { id: lotId },
+                    data: { isHidden: true }
+                });
+                console.log('Лот успешно скрыт (т.к. есть заказы)', hiddenLot);
+                return {
+                    message: 'Лот успешно скрыт (так как он используется в заказах)',
+                    id: hiddenLot.id,
+                    status: 'hidden'
+                };
+            }
+            else {
+                const deletedLot = await prisma.lot.delete({
+                    where: { id: lotId }
+                });
+                console.log('Лот успешно удален (заказов нет)', deletedLot);
+                return {
+                    message: 'Лот успешно удален',
+                    id: deletedLot.id,
+                    status: 'deleted'
+                };
+            }
         }
         catch (error) {
             if (error.code === 'P2025') {
                 throw new common_1.NotFoundException(`Лот с ID "${lotId}" не найден.`);
             }
-            console.error("Ошибка при удалении лота:", error);
-            throw new common_1.InternalServerErrorException('Не удалось удалить лот по ID');
+            if (error.code === 'P2003') {
+                console.warn(`Попытка удалить лот ${lotId}, у которого есть заказы (проверка _count не удалась?). Принудительное скрытие.`);
+                const hiddenLot = await prisma.lot.update({
+                    where: { id: lotId },
+                    data: { isHidden: true }
+                });
+                return {
+                    message: 'Лот успешно скрыт (связан с заказом)',
+                    id: hiddenLot.id,
+                    status: 'hidden'
+                };
+            }
+            console.error("Ошибка при удалении/скрытии лота:", error);
+            throw new common_1.InternalServerErrorException('Не удалось обработать запрос на удаление лота.');
         }
     }
 };

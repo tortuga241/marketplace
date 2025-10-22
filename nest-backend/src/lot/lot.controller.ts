@@ -63,7 +63,6 @@ export class LotController {
         return this.lotService.getLotsByAccountId(accountId);
     }
 
-
     //DELETE ЗАПРОС НА УДАЛЕНИЕ ОДНОГО ЛОТА ПО ID
     @Delete(':id')
     @HttpCode(200)
@@ -75,8 +74,8 @@ export class LotController {
     @ApiResponse({ status: 401, description: 'Пользователь не авторизован' })
     @ApiResponse({ status: 403, description: 'Нет прав для удаления (не владелец)' })
     @ApiResponse({ status: 404, description: 'Лот с указанным ID не найден' })
-    async deleteLotById( @Param('id', ParseUUIDPipe) lotId: string, @CurrentUser() user: any ) {
+    async deleteOrHideLotById( @Param('id', ParseUUIDPipe) lotId: string, @CurrentUser() user: any ) {
         console.log('ID пользователя из токена (user.id):', user.id);
-        return this.lotService.deleteLotById(lotId, user.id);
+        return this.lotService.deleteOrHideLotById(lotId, user.id);
     }
 }

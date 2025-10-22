@@ -112,13 +112,12 @@ export default function ProfilePage() {
         }
     }, [currentUserId, profileId]);
 
+    // 
     useEffect(() => {
-        // Этот код сработает *только* когда isOwner изменится (например, с false на true)
         if (isOwner) {
             console.log('isOwner state is now true, loading orders...');
             loadProfileOrders();
         }
-        // Нам не нужен 'else' - если isOwner false, мы просто не грузим заказы
     }, [isOwner]);
 
     if (isLoading) {

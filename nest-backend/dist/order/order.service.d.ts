@@ -4,6 +4,12 @@ import { CreateOrderDto } from './dto/order-create.dto';
 import { CompleteOrderDto } from './dto/order-complete.dto';
 import { ResendCodeDto } from './dto/order-resend.dto';
 import { Prisma } from '@prisma/client';
+export interface MinimalLotSnapshot extends Prisma.JsonObject {
+    title: string;
+    description: string;
+    type: string;
+    createdAt: string;
+}
 export declare class OrdersService {
     private prisma;
     private mailService;
@@ -22,12 +28,13 @@ export declare class OrdersService {
         cost: number;
         shopId: string;
         lotId: string;
-        lotSnapshot: Prisma.JsonValue | null;
-        sellerAccountId: string;
         buyerAccountId: string;
+        sellerAccountId: string;
+        lotSnapshot: Prisma.JsonValue | null;
         status: string;
         updatedAt: Date;
     }>;
+    private parseLotSnapshot;
     resendVerificationCode(resendCodeDto: ResendCodeDto, buyerAccountId: string): Promise<{
         message: string;
         expiresAt: Date;
@@ -52,9 +59,9 @@ export declare class OrdersService {
         cost: number;
         shopId: string;
         lotId: string;
-        lotSnapshot: Prisma.JsonValue | null;
-        sellerAccountId: string;
         buyerAccountId: string;
+        sellerAccountId: string;
+        lotSnapshot: Prisma.JsonValue | null;
         status: string;
         updatedAt: Date;
     }>;
@@ -72,9 +79,9 @@ export declare class OrdersService {
         cost: number;
         shopId: string;
         lotId: string;
-        lotSnapshot: Prisma.JsonValue | null;
-        sellerAccountId: string;
         buyerAccountId: string;
+        sellerAccountId: string;
+        lotSnapshot: Prisma.JsonValue | null;
         status: string;
         updatedAt: Date;
     })[]>;
@@ -92,9 +99,9 @@ export declare class OrdersService {
         cost: number;
         shopId: string;
         lotId: string;
-        lotSnapshot: Prisma.JsonValue | null;
-        sellerAccountId: string;
         buyerAccountId: string;
+        sellerAccountId: string;
+        lotSnapshot: Prisma.JsonValue | null;
         status: string;
         updatedAt: Date;
     })[]>;

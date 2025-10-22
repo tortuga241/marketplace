@@ -8,6 +8,7 @@ export declare class LotService {
         createdAt: Date;
         cost: string;
         accountId: string;
+        isHidden: boolean;
         shopId: string;
     }>;
     getAllLots(): Promise<{
@@ -18,6 +19,7 @@ export declare class LotService {
         createdAt: Date;
         cost: string;
         accountId: string;
+        isHidden: boolean;
         shopId: string;
     }[]>;
     getLotById(id: string): Promise<{
@@ -42,6 +44,7 @@ export declare class LotService {
         createdAt: Date;
         cost: string;
         accountId: string;
+        isHidden: boolean;
         shopId: string;
     }>;
     getLotsByAccountId(accountId: string): Promise<{
@@ -52,11 +55,12 @@ export declare class LotService {
         createdAt: Date;
         cost: string;
         accountId: string;
+        isHidden: boolean;
         shopId: string;
     }[]>;
-    deleteLotById(lotId: string, accountId: string): Promise<{
+    deleteOrHideLotById(lotId: string, accountId: string): Promise<{
         message: string;
         id: string;
-        title: string;
+        status: string;
     }>;
 }

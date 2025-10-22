@@ -56,7 +56,9 @@ export class LotService {
     //GET запрос на получение всех лотов (Для каталога)
     async getAllLots() {
         try {
-            const lot = await prisma.lot.findMany();
+            const lot = await prisma.lot.findMany({
+                where: { isHidden: false } 
+            });
             return lot;
         } catch (error) {
             console.error(error);
@@ -67,7 +69,7 @@ export class LotService {
     //GET запрос на получение конкретного лота
     async getLotById(id: string) {
         const lot = await prisma.lot.findUnique({
-            where: { id: id },
+            where: { id: id, isHidden: false },
             include: {
                 shop: {         
                     include: {
@@ -98,11 +100,12 @@ export class LotService {
         if(!owner) {
             throw new NotFoundException("Продавец с указанным ID не найден")
         }
-        //Если аккаунт все таки есть, ищем все его слоты
+
         try {
             const lots = await prisma.lot.findMany({
                 where: {
                     accountId: accountId,
+                    isHidden: false 
                 }
             });
             return lots;
@@ -112,43 +115,75 @@ export class LotService {
         }
     }
 
-    //DELETE запрос на удаление лота по уникальному ID
-    async deleteLotById(lotId: string, accountId: string) {
+    //DELETE запрос на удаление или скрытие лота по уникальному ID
+     async deleteOrHideLotById(lotId: string, accountId: string) {
         try {
-
+            //Находим лот и проверяем
             const lot = await prisma.lot.findUnique({
-                where: { id: lotId }
+                where: { id: lotId },
+                include: {
+                    _count: { 
+                        select: { orders: true }
+                    }
+                }
             });
 
             if (!lot) {
                 throw new NotFoundException(`Лот с ID "${lotId}" не найден.`);
             }
 
-            // Проверяем, принадлежит ли лот текущему пользователю
             if (lot.accountId !== accountId) {
-                console.log(accountId);
-                console.log(lot.accountId)
                 throw new ForbiddenException('У вас нет прав для удаления этого лота.');
             }
 
-            const deletedLot = await prisma.lot.delete({
-                where: { id: lotId }
-            });
+            // 3. ГЛАВНАЯ ЛОГИКА
+            if (lot._count.orders > 0) {
+                //Скрываем
+                const hiddenLot = await prisma.lot.update({
+                    where: { id: lotId },
+                    data: { isHidden: true }
+                });
 
-            console.log('Лот успешно удален', deletedLot);
-            return { 
-                message: 'Лот успешно удален', 
-                id: deletedLot.id,
-                title: deletedLot.title
-            };
+                console.log('Лот успешно скрыт (т.к. есть заказы)', hiddenLot);
+                return { 
+                    message: 'Лот успешно скрыт (так как он используется в заказах)',
+                    id: hiddenLot.id,
+                    status: 'hidden'
+                };
+
+            } else {
+                //Удаляем
+                const deletedLot = await prisma.lot.delete({
+                    where: { id: lotId }
+                });
+
+                console.log('Лот успешно удален (заказов нет)', deletedLot);
+                return { 
+                    message: 'Лот успешно удален', 
+                    id: deletedLot.id,
+                    status: 'deleted'
+                };
+            }
 
         } catch (error) {
             if (error.code === 'P2025') {
                 throw new NotFoundException(`Лот с ID "${lotId}" не найден.`);
             }
+            if (error.code === 'P2003') {
+                 console.warn(`Попытка удалить лот ${lotId}, у которого есть заказы (проверка _count не удалась?). Принудительное скрытие.`);
+                 const hiddenLot = await prisma.lot.update({
+                    where: { id: lotId },
+                    data: { isHidden: true }
+                });
+                return { 
+                    message: 'Лот успешно скрыт (связан с заказом)',
+                    id: hiddenLot.id,
+                    status: 'hidden'
+                };
+            }
             
-            console.error("Ошибка при удалении лота:", error);
-            throw new InternalServerErrorException('Не удалось удалить лот по ID');
+            console.error("Ошибка при удалении/скрытии лота:", error);
+            throw new InternalServerErrorException('Не удалось обработать запрос на удаление лота.');
         }
     }
 }

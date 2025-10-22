@@ -2,10 +2,10 @@
 
 import styles from './ProfileSeller.module.css';
 import Header from './Header';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
 
-import { Box, Star, Lightbulb } from 'lucide-react'
+import { Box, Star, Lightbulb, ShoppingBasket } from 'lucide-react'
 
 import ProfileSellerComp from './UI/profile/profileSellerComp';
 import StaticProfile from './UI/profile/static';
@@ -13,9 +13,10 @@ import ProductCardS from './UI/profile/productCardS';
 import ReviewsSeller from './UI/profile/reviewsSeller';
 import RecomendCard from './UI/profile/recomend';
 import CreateProductModal from './UI/profile/modalWin';
+import SellCart from './UI/profile/sellCart';
 
 // Принимаем isOwner
-export default function ProfileSeller({ user, shop, isOwner }) { 
+export default function ProfileSeller({ user, shop, isOwner, sales = [], isLoading, onRefreshOrders }) { 
 
     const [rating, setRating] = useState(0);
     const [review, setReview] = useState("");
@@ -29,6 +30,8 @@ export default function ProfileSeller({ user, shop, isOwner }) {
     const starArray = [1,2,3,4,5];
     
     const [activeTab, setActiveTab] = useState("products");
+    const [hasLoadedOrders, setHasLoadedOrders] = useState(false);
+    const prevActiveTabRef = useRef(activeTab);
 
     const host = "http://localhost:3001";
 
@@ -64,30 +67,59 @@ export default function ProfileSeller({ user, shop, isOwner }) {
         fetchProfileSellerLot();
     }, [userId]);
 
+     // Обновление заказов только при ПЕРВОМ переходе на вкладку orders
+    useEffect(() => {
 
-    //Удалиние лота по ID
+        if (activeTab === "orders" && 
+            !hasLoadedOrders && 
+            isOwner && 
+            onRefreshOrders &&
+            prevActiveTabRef.current !== "orders") {
+            
+            console.log('Первая загрузка заказов...');
+            onRefreshOrders();
+            setHasLoadedOrders(true);
+        }
+        
+        prevActiveTabRef.current = activeTab;
+    }, [activeTab, hasLoadedOrders, isOwner, onRefreshOrders]);
+
+    // Сбрасываем флаг загрузки при смене пользователя или магазина
+    useEffect(() => {
+        setHasLoadedOrders(false);
+    }, [userId, shopId]);
+
+    // Функция для ручного обновления заказов
+    const handleManualRefresh = useCallback(() => {
+        if (onRefreshOrders) {
+            console.log('Ручное обновление заказов...');
+            onRefreshOrders();
+        }
+    }, [onRefreshOrders]);
+
+
+    //Удаление или скрытие лота
     const handleDeleteLot = useCallback(async (lotId) => {
 
-        console.log("Айди лота:", lotId)
+        console.log("Запрос на удаление/скрытие лота:", lotId)
 
         if (!confirm('Вы уверены, что хотите удалить этот лот?')) {
             return;
         }
 
         try {
-            await axios.delete(`${host}/lots/${lotId}`, {withCredentials: true, });
+            const response = await axios.delete(`${host}/lots/${lotId}`, {withCredentials: true, });
 
             setLots(prevLots => prevLots.filter(lot => lot.id !== lotId));
-            
-            console.log(`Лот ${lotId} успешно удален.`);
+
+            console.log(response.data.message); 
 
         } catch (error) {
-            console.error("Ошибка при удалении лота:", error);
+            console.error("Ошибка при удалении/скрытии лота:", error);
             console.log(lotId)
             alert(error.response?.data?.message || "Не удалось удалить лот.");
         }
     }, [setLots]);
-    
 
     return (
         <div className={styles.main_container_profile_seller}>
@@ -102,6 +134,9 @@ export default function ProfileSeller({ user, shop, isOwner }) {
                     </div>
                     <div className={`${styles.profile_point_ps} ${activeTab === "reviews" ? styles.active : ""}`}
                         onClick={() => setActiveTab("reviews")}><Star width={15} height={15} /> Отзывы
+                    </div>
+                    <div className={`${styles.profile_point_ps} ${activeTab === "orders" ? styles.active : ""}`}
+                        onClick={() => setActiveTab("orders")}><ShoppingBasket width={15} height={15} /> Заказы
                     </div>
                     <div className={`${styles.profile_point_ps} ${activeTab === "tips" ? styles.active : ""}`}
                         onClick={() => setActiveTab("tips")}><Lightbulb width={15} height={15} /> Советы
@@ -131,6 +166,32 @@ export default function ProfileSeller({ user, shop, isOwner }) {
                         )}
                         <ReviewsSeller />
                     </div>}
+                {activeTab === "orders" && 
+                    (<div className={styles.col_container_ps}>
+                        <div className={styles.orders_header}>
+                            <h1>Мои заказы</h1>
+                            {isOwner && (
+                                <button 
+                                    onClick={handleManualRefresh}
+                                    disabled={isLoading}
+                                    className={styles.refresh_button}
+                                >
+                                    {isLoading ? 'Обновление...' : 'Обновить'}
+                                </button>
+                            )}
+                        </div>
+                        <div className={styles.orders_container}>
+                            {isLoading ? (
+                                <p>Загрузка заказов...</p>
+                            ) : sales && sales.length > 0 ? (
+                                sales.map((order) => (
+                                    <SellCart key={order.id} order={order} />
+                                ))
+                            ) : (
+                                <p>У вас пока нет заказов</p>
+                            )}
+                        </div>
+                    </div>)}
                 {activeTab === "tips" && <div><RecomendCard /></div>}
             </div>
             {/* Скрываем модальное окно для не-владельца */}

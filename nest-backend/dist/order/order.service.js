@@ -55,12 +55,11 @@ let OrdersService = class OrdersService {
         });
         const code = this.generateVerificationCode();
         const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
-        const lotSnapshot = lotDetails;
         const minimalLotSnapshot = {
             title: lot.title,
             description: lot.description,
             type: lot.type,
-            createdAt: lot.createdAt
+            createdAt: lot.createdAt.toISOString()
         };
         const verification = await this.prisma.orderVerification.create({
             data: {
@@ -113,6 +112,10 @@ let OrdersService = class OrdersService {
         if (!seller) {
             throw new common_1.InternalServerErrorException('Продавец лота не найден.');
         }
+        const buyer = await this.prisma.account.findUnique({
+            where: { id: buyerAccountId },
+            select: { login: true },
+        });
         const orderCode = (0, crypto_1.randomBytes)(4).toString('hex').toUpperCase();
         try {
             const newOrder = await this.prisma.order.create({
@@ -127,27 +130,40 @@ let OrdersService = class OrdersService {
                     status: 'COMPLETED',
                 },
             });
-            const minimalOrderDataSeller = {
+            const orderDataForEmail = {
                 code: newOrder.code,
                 cost: newOrder.cost,
                 createdAt: newOrder.createdAt,
                 sellerLogin: seller.login
             };
+            const lotSnapshot = this.parseLotSnapshot(verification.lotSnapshot);
             this.mailService
-                .sendOrderConfirmationToBuyer(verification.buyerEmail, newOrder, verification.lotSnapshot)
+                .sendOrderConfirmationToBuyer(verification.buyerEmail, orderDataForEmail, lotSnapshot)
                 .catch((err) => console.error('Ошибка отправки письма покупателю:', err));
             this.mailService
-                .sendOrderNotificationToSeller(seller.email, newOrder, verification.lotSnapshot)
+                .sendOrderNotificationToSeller(seller.email, orderDataForEmail, lotSnapshot, buyer?.login)
                 .catch((err) => console.error('Ошибка отправки письма продавцу:', err));
             await this.prisma.orderVerification.delete({ where: { id: verificationId } });
             return newOrder;
         }
         catch (error) {
-            if (error.code === 'P2002') {
+            if (error instanceof client_1.Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
                 throw new common_1.ForbiddenException('Ошибка создания заказа. Попробуйте снова.');
             }
             throw new common_1.InternalServerErrorException('Не удалось создать заказ');
         }
+    }
+    parseLotSnapshot(lotSnapshot) {
+        if (!lotSnapshot || typeof lotSnapshot !== 'object' || Array.isArray(lotSnapshot)) {
+            throw new Error('Invalid lot snapshot data');
+        }
+        const snapshot = lotSnapshot;
+        return {
+            title: String(snapshot.title || ''),
+            description: String(snapshot.description || ''),
+            type: String(snapshot.type || ''),
+            createdAt: String(snapshot.createdAt || '')
+        };
     }
     async resendVerificationCode(resendCodeDto, buyerAccountId) {
         const verification = await this.prisma.orderVerification.findUnique({

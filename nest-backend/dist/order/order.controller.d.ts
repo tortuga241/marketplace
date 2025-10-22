@@ -23,9 +23,9 @@ export declare class OrdersController {
         cost: number;
         shopId: string;
         lotId: string;
-        lotSnapshot: import("@prisma/client/runtime/library").JsonValue | null;
-        sellerAccountId: string;
         buyerAccountId: string;
+        sellerAccountId: string;
+        lotSnapshot: import("@prisma/client/runtime/library").JsonValue | null;
         status: string;
         updatedAt: Date;
     }>;
@@ -47,9 +47,9 @@ export declare class OrdersController {
         cost: number;
         shopId: string;
         lotId: string;
-        lotSnapshot: import("@prisma/client/runtime/library").JsonValue | null;
-        sellerAccountId: string;
         buyerAccountId: string;
+        sellerAccountId: string;
+        lotSnapshot: import("@prisma/client/runtime/library").JsonValue | null;
         status: string;
         updatedAt: Date;
     })[]>;
@@ -67,9 +67,9 @@ export declare class OrdersController {
         cost: number;
         shopId: string;
         lotId: string;
-        lotSnapshot: import("@prisma/client/runtime/library").JsonValue | null;
-        sellerAccountId: string;
         buyerAccountId: string;
+        sellerAccountId: string;
+        lotSnapshot: import("@prisma/client/runtime/library").JsonValue | null;
         status: string;
         updatedAt: Date;
     })[]>;
@@ -93,9 +93,9 @@ export declare class OrdersController {
         cost: number;
         shopId: string;
         lotId: string;
-        lotSnapshot: import("@prisma/client/runtime/library").JsonValue | null;
-        sellerAccountId: string;
         buyerAccountId: string;
+        sellerAccountId: string;
+        lotSnapshot: import("@prisma/client/runtime/library").JsonValue | null;
         status: string;
         updatedAt: Date;
     }>;

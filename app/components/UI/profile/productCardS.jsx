@@ -1,7 +1,7 @@
 import styles from './styles/cardProductS.module.css';
 import { Star, Trash2 } from 'lucide-react';
 
-export default function ProductCardS({ lots, isOwner, onDelete }) {
+export default function ProductCardS({ lots, isOwner, onDelete, onHide }) {
 
     const handleDeleteClick = (lotId) => {
         if (onDelete) {

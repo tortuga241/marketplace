@@ -55,9 +55,10 @@ model Lot {
   cost        String
   title       String
   description String
-  shop        Shop   @relation(fields: [shopId], references: [id])
+  isHidden    Boolean   @default(false)
+  shop        Shop      @relation(fields: [shopId], references: [id])
   orders      Order[]
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
 }
 
 //ORDER_TAB

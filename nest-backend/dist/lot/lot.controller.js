@@ -44,9 +44,9 @@ let LotController = class LotController {
         }
         return this.lotService.getLotsByAccountId(accountId);
     }
-    async deleteLotById(lotId, user) {
+    async deleteOrHideLotById(lotId, user) {
         console.log('ID пользователя из токена (user.id):', user.id);
-        return this.lotService.deleteLotById(lotId, user.id);
+        return this.lotService.deleteOrHideLotById(lotId, user.id);
     }
 };
 exports.LotController = LotController;
@@ -113,7 +113,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
-], LotController.prototype, "deleteLotById", null);
+], LotController.prototype, "deleteOrHideLotById", null);
 exports.LotController = LotController = __decorate([
     (0, swagger_1.ApiTags)('Lot'),
     (0, common_1.Controller)('lots'),
