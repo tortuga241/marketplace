@@ -20,7 +20,7 @@ export default function Register() {
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
 
-    const port = 'http://localhost:3001';
+    const port = process.env.NEXT_PUBLIC_HOST;
 
     //Вход в аккаунт
     const handleLogin = async () => {

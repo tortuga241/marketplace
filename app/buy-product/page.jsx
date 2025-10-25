@@ -14,7 +14,7 @@ export default function BuyProduct() {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
 
-    const host = "http://localhost:3001";
+    const host = process.env.NEXT_PUBLIC_HOST;
 
     const [currentStep, setCurrentStep] = useState(1); 
     const [code, setCode] = useState(['', '', '', '', '', '']);

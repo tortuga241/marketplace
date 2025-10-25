@@ -67,3 +67,64 @@
     font-size: 14px;
     color: gray;
 }
+
+.static_container_ps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 20px;
+    width: 100%;
+}
+.card_container_ps {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+}
+.row_container_ps {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: #4b5563; /* Серый цвет для текста */
+}
+.num_ps {
+    font-size: 28px;
+    font-weight: 700;
+    margin-top: 4px;
+}
+.col_container_ps {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 4px;
+}
+.decoration_container_ps {
+    width: 100%;
+    height: 8px;
+    background-color: #e5e7eb; /* Светло-серый фон полоски */
+    border-radius: 4px;
+    overflow: hidden;
+}
+.color_container {
+    height: 100%;
+    background-color: #6500f3; /* Фиолетовый цвет для положительных отзывов */
+    transition: width 0.5s ease;
+    border-radius: 4px;
+}
+.txt_ps {
+    font-size: 12px;
+    color: #6500f3;
+    font-weight: 500;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+    .static_container_ps {
+        grid-template-columns: 1fr;
+    }
+}

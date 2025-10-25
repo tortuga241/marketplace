@@ -16,7 +16,7 @@ export default function CreateProductModal({ onClose, shopId, accountId, onLotCr
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const host = "http://localhost:3001"
+    const host = process.env.NEXT_PUBLIC_HOST;
 
     const productTypes = [
         { value: 'video', label: 'Видео' },

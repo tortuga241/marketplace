@@ -166,3 +166,14 @@
     flex-direction: column;
     gap: 20px;
 }
+
+.review_form_container {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    align-items: center;
+}
+
+.input_add_review_p {
+    width: 960px;
+}

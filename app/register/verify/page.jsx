@@ -13,7 +13,7 @@ export default function Verify() {
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
 
-    const port = 'http://localhost:3001';
+    const port = process.env.NEXT_PUBLIC_HOST;
 
     //Верификация
     const handleVerify = async () => {

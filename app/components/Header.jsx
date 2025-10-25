@@ -12,7 +12,7 @@ export default function Header() {
   const [currentUser, setCurrentUser] = useState(null);
   const [ searchText, setSearchText ] = useState("");
 
-  const port = 'http://localhost:3001';
+  const port = process.env.NEXT_PUBLIC_HOST;
 
   const router = useRouter();
 

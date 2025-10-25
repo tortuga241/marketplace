@@ -23,7 +23,7 @@ export default function ProfilePage() {
     const [userSales, setUserSales] = useState([]);
     const [isOrdersLoading, setIsOrdersLoading] = useState(false);
 
-    const port = "http://localhost:3001"
+    const port = process.env.NEXT_PUBLIC_HOST;
 
     // GET запрос на получение заказов и продаж
     const loadProfileOrders = async () => {

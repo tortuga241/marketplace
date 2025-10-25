@@ -10,6 +10,9 @@ import BecomeS from "../components/UI/becomeShop/becomeS";
 import BecomeT from "../components/UI/becomeShop/becomeT";
 
 export default function BecomeSeller() {
+
+  const host = process.env.NEXT_PUBLIC_HOST;
+
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     type: "",
@@ -31,8 +34,7 @@ export default function BecomeSeller() {
 
 const handleSubmit = async () => {
   try {
-    const response = await axios.post(
-      "http://localhost:3001/shop/create",
+    const response = await axios.post(`${host}/shop/create`,
       {
         type: formData.type,
         category: formData.category,

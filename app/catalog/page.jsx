@@ -19,34 +19,61 @@ export default function CatalogPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const port = "http://localhost:3001";
+    const port = process.env.NEXT_PUBLIC_HOST;
 
     //GET запрос на вывод информации о всех товарах
     useEffect(() => {
-      const fetchAllLots = async () => {
+      const fetchAllLotsWithRatings = async () => {
         try { 
-          const response = await axios.get(`${port}/lots`);
-          const productsWithGrades = response.data.map(lot => ({
-            ...lot,
-            price: lot.cost, 
-            grade: lot.grade || (Math.random() * (5 - 3) + 3).toFixed(1),
-            gradeNum: lot.gradeNum || Math.floor(Math.random() * 150) + 1,
-          }));
-          setAllProducts(productsWithGrades);
+          const lotsResponse = await axios.get(`${port}/lots`);
+          const lots = lotsResponse.data;
+
+          const productsWithRatings = await Promise.all(
+            lots.map(async (lot) => {
+              try {
+                // Получаем все отзывы для этого лота
+                const reviewsResponse = await axios.get(`${port}/reviews/lot/${lot.id}`);
+                const reviews = reviewsResponse.data;
+              
+                const reviewCount = reviews.length;
+                const averageRating = reviewCount > 0 
+                  ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviewCount
+                  : 0;
+                
+                return {
+                  ...lot,
+                  price: lot.cost,
+                  grade: Number(averageRating.toFixed(1)), // округляем до 1 знака
+                  gradeNum: reviewCount,
+                };
+              } catch (error) {
+                console.error(`Ошибка загрузки рейтинга для товара ${lot.id}:`, error);
+                return {
+                  ...lot,
+                  price: lot.cost,
+                  grade: 0,
+                  gradeNum: 0,
+                };
+              }
+            })
+          );
+          
+          setAllProducts(productsWithRatings);
           setError(null);
         } catch (err) {
-                console.error("Ошибка при загрузке каталога:", err);
-                setError("Не удалось загрузить каталог товаров.");
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchAllLots();
+          console.error("Ошибка при загрузке каталога:", err);
+          setError("Не удалось загрузить каталог товаров.");
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      
+      fetchAllLotsWithRatings();
     }, []);
 
-const parsePrice = (priceString) => {
-    return parseInt(priceString.replace(/\D/g, ''), 10);
-};
+  const parsePrice = (priceString) => {
+      return parseInt(priceString.replace(/\D/g, ''), 10);
+  };
 
   const [filters, setFilters] = useState({
     contentType: {
@@ -125,7 +152,6 @@ const parsePrice = (priceString) => {
       <input
         type="checkbox"
         checked={checked}
-        // Изменяем onChange, чтобы он вызывал toggleFilter с правильными аргументами
         onChange={() => onChange('contentType', value)} 
         className={styles.checkboxInput}
       />

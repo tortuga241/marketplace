@@ -15,6 +15,7 @@ model Account {
   email        String   @unique
   key          String   @unique
   shop         Shop?
+  reviews      Review[]
   boughtOrders Order[] @relation("BuyerOrders")
   soldOrders   Order[] @relation("SellerOrders")
   isVerified   Boolean  @default(false)
@@ -41,6 +42,7 @@ model Shop {
   description String
   owner       Account  @relation(fields: [ownerId], references: [id])
   phone       String
+  reviews     Review[]
   lots        Lot[]
   orders      Order[]
   createdAt   DateTime @default(now())
@@ -55,6 +57,7 @@ model Lot {
   cost        String
   title       String
   description String
+  reviews     Review[]
   isHidden    Boolean   @default(false)
   shop        Shop      @relation(fields: [shopId], references: [id])
   orders      Order[]
@@ -104,6 +107,7 @@ model Article {
   cost        String
 }
 
+//REVIEWS_TAB
 model Review {
   id          String   @id @default(uuid())
   accountId   String
@@ -112,6 +116,9 @@ model Review {
   articleId   String?
   rating      Int
   description String
+  account     Account  @relation(fields: [accountId], references: [id])
+  shop        Shop     @relation(fields: [shopId], references: [id])
+  lot         Lot?     @relation(fields: [lotId], references: [id])
   createdAt   DateTime @default(now())
 }
 

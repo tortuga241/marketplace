@@ -14,6 +14,9 @@ const class_validator_1 = require("class-validator");
 const swagger_1 = require("@nestjs/swagger");
 class ReviewsDto {
     description;
+    rating;
+    shopId;
+    lotId;
 }
 exports.ReviewsDto = ReviewsDto;
 __decorate([
@@ -21,4 +24,23 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], ReviewsDto.prototype, "description", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: '5', description: 'Рейтинг от 1 до 5' }),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.Min)(1),
+    (0, class_validator_1.Max)(5),
+    __metadata("design:type", Number)
+], ReviewsDto.prototype, "rating", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'uuid-shop-123', description: 'ID магазина (продавца), к которому отзыв' }),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ReviewsDto.prototype, "shopId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'uuid-lot-456', description: 'ID лота (если отзыв о лоте)', required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ReviewsDto.prototype, "lotId", void 0);
 //# sourceMappingURL=reviews.dto.js.map
