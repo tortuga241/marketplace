@@ -1,17 +1,19 @@
 "use client"
 
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-import Header from '../../components/Header';
+import { useParams } from 'next/navigation'; 
 import styles from './styles.module.css';
 
+import Header from '../../components/Header';
 import BuyerProfile from '../../components/ProfileUser';
 import SellerProfile from '../../components/ProfileSeller'; 
-import { useParams } from 'next/navigation'; 
+
+import { useApi } from '../../src/hooks/useApi';
 
 export default function ProfilePage() {
     const params = useParams();
     const profileId = params.id; 
+    const api = useApi();
 
     const [hasShop, setHasShop] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -22,10 +24,9 @@ export default function ProfilePage() {
     const [userOrders, setUserOrders] = useState([]);
     const [userSales, setUserSales] = useState([]);
     const [isOrdersLoading, setIsOrdersLoading] = useState(false);
+    
 
-    const port = process.env.NEXT_PUBLIC_HOST;
-
-    // GET запрос на получение заказов и продаж
+    //GET запрос на получение заказов и продаж
     const loadProfileOrders = async () => {
         if (!isOwner || !currentUserId) return;
         
@@ -33,16 +34,16 @@ export default function ProfilePage() {
         try {
             console.log('Загружаем заказы для пользователя:', currentUserId);
             
-            const [purchasesResponse, salesResponse] = await Promise.all([
-                axios.get(`${port}/orders/my-purchases`, { withCredentials: true }),
-                axios.get(`${port}/orders/my-sales`, { withCredentials: true })
+            const [purchases, sales] = await Promise.all([
+                api.findMyPurchases(),
+                api.findMySales()
             ]);
             
-            console.log('Покупки:', purchasesResponse.data);
-            console.log('Продажи:', salesResponse.data);
+            console.log('Покупки успешно выведены');
+            console.log('Продажи успешно');
             
-            setUserOrders(purchasesResponse.data || []);
-            setUserSales(salesResponse.data || []);
+            setUserOrders(purchases || []);
+            setUserSales(sales || []);
             
         } catch (error) {
             console.error("Ошибка при загрузке заказов профиля:", error);
@@ -64,19 +65,18 @@ export default function ProfilePage() {
             let loggedInUserId = null;
 
             try {
-                // 1. Получение ID текущего пользователя
-                const currentUserResponse = await axios.get(`${port}/user/profile`, {withCredentials: true});
-                loggedInUserId = currentUserResponse.data.id;
-                setCurrentUserId(loggedInUserId);
-                console.log('Текущий пользователь ID:', loggedInUserId);
+                //Получение ID текущего пользователя
+                const currentUser = await api.getProfile();
+                setCurrentUserId(currentUser.id);
+                console.log('Текущий пользователь ID:', currentUser.id);
             } catch (error) {
-                console.log("Пользователь не залогинен:", error.response?.status);
+                console.log("Пользователь не авторизован");
+                setCurrentUserId(null);
             }
 
             try {
-                // 2. Получение данных просматриваемого профиля
-                const userResponse = await axios.get(`${port}/user/${profileId}`);
-                fetchedUser = userResponse.data;
+                //Получение данных просматриваемого профиля
+                const fetchedUser = await api.getProfileById(profileId);
                 setUser(fetchedUser);  
                 console.log('Загруженный пользователь:', fetchedUser);
 
@@ -99,7 +99,7 @@ export default function ProfilePage() {
             }
         };
         loadProfileData();
-    }, [profileId]);
+    }, [profileId, api]);
 
     // Загрузка заказов когда определен владелец
     useEffect(() => {

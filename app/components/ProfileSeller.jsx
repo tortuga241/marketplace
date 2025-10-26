@@ -16,7 +16,11 @@ import RecomendCard from './UI/profile/recomend';
 import CreateProductModal from './UI/profile/modalWin';
 import SellCart from './UI/profile/sellCart';
 
+import { useApi } from '../src/hooks/useApi';
+
 export default function ProfileSeller({ user, shop, isOwner, sales = [], isLoading, onRefreshOrders }) { 
+
+    const api = useApi();
 
     const [rating, setRating] = useState(0);
     const [review, setReview] = useState("");
@@ -109,6 +113,7 @@ export default function ProfileSeller({ user, shop, isOwner, sales = [], isLoadi
         };
     };
 
+    //POST запрос на отпраку отзыва
     const handleSubmitReview = async () => {
         if (rating === 0 || review.trim() === "") {
             setSubmitError("Пожалуйста, укажите рейтинг и напишите отзыв.");

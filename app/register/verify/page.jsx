@@ -1,19 +1,19 @@
 "use client"
 
 import { useState } from 'react';
-import styles from './verify.module.css';
 import { useRouter } from "next/navigation";
-import axios from 'axios';
+import styles from './verify.module.css';
+
+import { useApi } from '../../src/hooks/useApi';
 
 export default function Verify() {
 
     const router = useRouter();
+    const api = useApi();
 
     const [code, setCode] = useState("");
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
-
-    const port = process.env.NEXT_PUBLIC_HOST;
 
     //Верификация
     const handleVerify = async () => {
@@ -22,10 +22,8 @@ export default function Verify() {
             return;
         }
         try {
-            const res = await axios.post(`${port}/user/verify-register`, {
-                code
-            });
-            setMessage(res.data.message);
+            await api.verifyRegister({ code })
+            setMessage("Почта успешно подтверждена");
             router.push("/register");
         } catch (err) {
             if (err.response) {

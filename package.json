@@ -32,9 +32,14 @@
     "@eslint/eslintrc": "^3",
     "@nestjs/cli": "^11.0.10",
     "@openapitools/openapi-generator-cli": "^2.25.0",
+    "@types/node": "^24.9.1",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
     "orval": "^7.15.0",
-    "prisma": "^6.16.2"
+    "prettier": "^3.6.2",
+    "prisma": "^6.16.2",
+    "typescript": "^5.9.3"
   }
 }

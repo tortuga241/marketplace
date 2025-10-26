@@ -1,66 +1,46 @@
-// import { useMemo } from "react";
-// import { 
-//     OrdersControllerCompleteResult,
-//     OrdersControllerFindMySalesResult,
-//     OrdersControllerFindMyPurchasesResult,
-//     OrdersControllerFindOneResult,
-//     OrdersControllerInitiateResult,
-//     OrdersControllerResendResult,
-//     LotControllerDeleteOrHideLotByIdResult,
-//     LotControllerGetAllLotsResult,
-//     LotControllerGetLotByIdResult,
-//     LotControllerGetLotsByAccountIdResult,
-//     LotControllerLotResult,
-//     UserControllerGetProfileByIdResult,
-//     UserControllerGetProfileResult,
-//     UserControllerLoginResult,
-//     UserControllerLogoutResult,
-//     UserControllerRequestRegisterResult,
-//     UserControllerVerifyRegisterResult,
-//     ShopControllerCreateShopResult,
-//     ShopControllerGetShopResult,
-//     ShopControllerUpdateShopResult,
-//     ReviewControllerCreateReviewResult,
-//     ReviewControllerDeleteReviewResult,
-//     ReviewControllerGetReviewsForLotResult,
-//     ReviewControllerGetReviewsForShopResult,   
-// } from "../lib/api/client";    
+import { useMemo } from "react";
+import { getMarketAPI } from "../lib/api/client";    
 
-// export const useApi = () => {
-//     return useMemo(() => ({
-//         // ACCOUNT
-//         requestRegister: UserControllerRequestRegisterResult,
-//         login: UserControllerLoginResult,
-//         logout: UserControllerLogoutResult,
-//         verifyRegister: UserControllerVerifyRegisterResult,
-//         getProfile: UserControllerGetProfileResult,
-//         getProfileById: UserControllerGetProfileByIdResult,
+export const useApi = () => {
+  const api = useMemo(() => {
+    const marketAPI = getMarketAPI();
+    
+    return {
+      // ACCOUNT
+      requestRegister: marketAPI.userControllerRequestRegister,
+      login: marketAPI.userControllerLogin,
+      logout: marketAPI.userControllerLogout,
+      verifyRegister: marketAPI.userControllerVerifyRegister,
+      getProfile: marketAPI.userControllerGetProfile,
+      getProfileById: marketAPI.userControllerGetProfileById,
 
-//         // ORDERS
-//         completeOrder: OrdersControllerCompleteResult,
-//         findMySales: OrdersControllerFindMySalesResult,
-//         findMyPurchases: OrdersControllerFindMyPurchasesResult,
-//         findOneOrder: OrdersControllerFindOneResult,
-//         initiateOrder: OrdersControllerInitiateResult,
-//         resendOrder: OrdersControllerResendResult,
+      // ORDERS
+      completeOrder: marketAPI.ordersControllerComplete,
+      findMySales: marketAPI.ordersControllerFindMySales,
+      findMyPurchases: marketAPI.ordersControllerFindMyPurchases,
+      findOneOrder: marketAPI.ordersControllerFindOne,
+      initiateOrder: marketAPI.ordersControllerInitiate,
+      resendOrder: marketAPI.ordersControllerResend,
 
-//         // LOTS
-//         deleteOrHideLot: LotControllerDeleteOrHideLotByIdResult,
-//         getAllLots: LotControllerGetAllLotsResult,
-//         getLotById: LotControllerGetLotByIdResult,
-//         getLotsByAccountId: LotControllerGetLotsByAccountIdResult,
-//         createOrUpdateLot: LotControllerLotResult,
+      // LOTS
+      deleteOrHideLot: marketAPI.lotControllerDeleteOrHideLotById,
+      getAllLots: marketAPI.lotControllerGetAllLots,
+      getLotById: marketAPI.lotControllerGetLotById,
+      getLotsByAccountId: marketAPI.lotControllerGetLotsByAccountId,
+      createOrUpdateLot: marketAPI.lotControllerLot,
 
-//         // SHOPS
-//         createShop: ShopControllerCreateShopResult,
-//         getShop: ShopControllerGetShopResult,
-//         updateShop: ShopControllerUpdateShopResult,
+      // SHOPS
+      createShop: marketAPI.shopControllerCreateShop,
+      getShop: marketAPI.shopControllerGetShop,
+      updateShop: marketAPI.shopControllerUpdateShop,
 
-//         // REVIEWS
-//         createReview: ReviewControllerCreateReviewResult,
-//         deleteReview: ReviewControllerDeleteReviewResult,
-//         getReviewsForLot: ReviewControllerGetReviewsForLotResult,
-//         getReviewsForShop: ReviewControllerGetReviewsForShopResult,
+      // REVIEWS
+      createReview: marketAPI.reviewControllerCreateReview,
+      deleteReview: marketAPI.reviewControllerDeleteReview,
+      getReviewsForLot: marketAPI.reviewControllerGetReviewsForLot,
+      getReviewsForShop: marketAPI.reviewControllerGetReviewsForShop,
+    };
+  }, []);
 
-//     }), []);
-// };
+  return api;
+};

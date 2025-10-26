@@ -1,13 +1,13 @@
 "use client"
-import axios from 'axios';
-import styles from './styles/profileUser.module.css';
 import { User, LogOut } from 'lucide-react';
-import { useState, useEffect } from "react"; 
+import styles from './styles/profileUser.module.css';
+
+import { useApi } from '../../../src/hooks/useApi';
 
 // Принимаем user и isOwner
 export default function ProfileUser({ user, isOwner }) {
 
-   const port = process.env.NEXT_PUBLIC_HOST;
+    const api = useApi();
    
    // Используем данные из props
    const profile = {
@@ -18,12 +18,11 @@ export default function ProfileUser({ user, isOwner }) {
    // Выход из аккаунта
     const handleLogout = async () => {
         try {
-            // Вызываем logout и сбрасываем токен в cookies
-            await axios.post(`${port}/user/logout`, {}, { withCredentials: true });
-            window.location.href = "/"; // Перенаправляем на главную
+            await api.logout({}),
+            window.location.href = "/"; 
         } catch(error) {
             console.error("Ошибка при выходе", error);
-            window.location.href = "/"; // Перенаправляем даже при ошибке для сброса состояния
+            window.location.href = "/"; 
         }
     };
 
@@ -34,8 +33,6 @@ export default function ProfileUser({ user, isOwner }) {
         }
         return login.charAt(0).toUpperCase();
     };
-
-    // ВНИМАНИЕ: СТАРАЯ ЛОГИКА useEffect УДАЛЕНА И ЗАМЕНЕНА НА ИСПОЛЬЗОВАНИЕ PROPS
     
     return (
         <section className={styles.profile_container}>

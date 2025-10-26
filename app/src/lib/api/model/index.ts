@@ -6,12 +6,12 @@
  * OpenAPI spec version: 1.0
  */
 
-export * from './completeOrderDto';
-export * from './createOrderDto';
-export * from './loginDto';
-export * from './lotDto';
-export * from './openShopDto';
-export * from './requestRegisterDto';
-export * from './resendCodeDto';
-export * from './reviewsDto';
-export * from './verifyRegisterDto';
+export * from "./completeOrderDto";
+export * from "./createOrderDto";
+export * from "./loginDto";
+export * from "./lotDto";
+export * from "./openShopDto";
+export * from "./requestRegisterDto";
+export * from "./resendCodeDto";
+export * from "./reviewsDto";
+export * from "./verifyRegisterDto";

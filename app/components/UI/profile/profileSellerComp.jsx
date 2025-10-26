@@ -1,14 +1,14 @@
 "use client"
 
 import styles from './styles/profile.module.css';
-import { useState, useEffect } from 'react';
 import { CheckCircle2, Store, Calendar, MessageSquare, LogOut } from "lucide-react";
-import axios from 'axios';
+
+import { useApi } from '../../../src/hooks/useApi';
 
 // Принимаем user, shop и isOwner
 export default function ProfileSellerComp({ user, shop, isOwner }) {
 
-    const port = process.env.NEXT_PUBLIC_HOST;
+    const api = useApi();
 
     // Используем данные из props
     const profileSeller = {
@@ -23,7 +23,7 @@ export default function ProfileSellerComp({ user, shop, isOwner }) {
 
     const handleLogout = async () => {
         try {
-            await axios.post(`${port}/user/logout`, {}, {withCredentials: true});
+            await api.logout({})
             window.location.href = "/";
         } catch(error) {
             console.error("Ошибка при выходе", error);

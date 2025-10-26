@@ -85,6 +85,13 @@
     cursor: not-allowed;
 }
 
+.reviews_container_pp {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 30px;
+    margin-top: 10px;
+}
 
 .char_counter {
     font-size: 12px;

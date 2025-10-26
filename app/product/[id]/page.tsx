@@ -1,22 +1,23 @@
 "use client"
 
-import styles from './styles.module.css';
 import { useState, useEffect } from 'react';
 import { Star } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { useParams } from 'next/navigation';
+import styles from './styles.module.css';
 
 import Header from '../../components/Header';
+import Footer from '../../components/footer';
 import ProductHeader from '../../components/UI/productHeader/productHeader';
-import Footer from '@/app/components/footer';
-import axios from 'axios';
-import { useParams } from 'next/navigation';
+import ReviewsSeller from '../../components/UI/profile/reviewsSeller';
 
-import ReviewsSeller from '@/app/components/UI/profile/reviewsSeller';
+import { useApi } from '../../src/hooks/useApi';
 
 export default function ProductPage() {
 
     const params = useParams();
-    const productId = params.id;
+    const productId = params.id as string;
+    const api = useApi();
 
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -29,25 +30,28 @@ export default function ProductPage() {
     const [submitError, setSubmitError] = useState(null);
     const starArray = [1,2,3,4,5];
 
-    const host = process.env.NEXT_PUBLIC_HOST;
-
     //ограничение символов
-    const handleReviewChange = (e) => {
+    const handleReviewChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         if (value.length <= 120) {
             setReview(value);
         }
     };
 
-    const fetchReviews = async (id) => {
+
+    //GET запрос на вывод отзыва к лоту
+    const fetchReviews = async (id: string) => {
         try {
-            const response = await axios.get(`${host}/reviews/lot/${id}`);
-            setReviews(response.data);
-        } catch (err) {
+            //Передаем данные типизируя их используя any
+            const reviewsData: any = await api.getReviewsForLot(id); 
+            setReviews(reviewsData || []);
+        } catch (err: any) {
             console.error("Ошибка при загрузке отзывов:", err);
+            setReviews([]);
         }
     };
     
+
     //POST запрос на отпарвку отзыва
     const handleSubmitReview = async () => {
         if (rating === 0 || review.trim() === "") {
@@ -72,20 +76,21 @@ export default function ProductPage() {
         };
 
         try {
-            await axios.post(`${host}/reviews`, reviewData, {withCredentials: true});
+            await api.createReview(reviewData);
 
             // Сброс формы и обновление списка
             setRating(0);
             setReview("");
             await fetchReviews(productId);
 
-        } catch (err) {
+        } catch (err: any) {
             const message = err.response?.data?.message || err.message || 'Не удалось отправить отзыв';
             setSubmitError(message);
         } finally {
             setIsSubmitting(false);
         }
     };
+
 
     //GET запрос на получение информации о конкреном продукте по ID
     useEffect(() => {
@@ -97,25 +102,24 @@ export default function ProductPage() {
                 setLoading(true);
                 setError(null);
 
-                const productResponse = await axios.get(`${host}/lots/${productId}`);
+                const productData: any = await api.getLotById(productId);
                 
-                if(!productResponse.data) {
-                    throw new Error("Продукт не найден")
+                if (!productData) {
+                    throw new Error("Продукт не найден");
                 }
 
-                setProduct(productResponse.data);
-
+                setProduct(productData);
                 await fetchReviews(productId); 
 
-            } catch (err) {
+            } catch (err: any) {
                 const message = err.response?.data?.message || err.message || "Неизвестная ошибка при загрузке данных";
                 setError(message);
             } finally {
                 setLoading(false);
             }
-        }
+        };
         fetchData(); 
-    }, [productId, host]);
+    }, [productId, api]);
 
     //При загрузки
     if (loading) {

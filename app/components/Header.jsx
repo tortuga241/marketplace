@@ -2,34 +2,32 @@
 
 import { Search, Bell, User, ShoppingCart } from "lucide-react";
 import { useState, useEffect, use } from "react";
-import styles from './Header.module.css';
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+import styles from './Header.module.css';
+
+import { useApi } from "../src/hooks/useApi";
 
 export default function Header() {
+
+  const router = useRouter();
+  const api = useApi();
+
   const [login, setLogin] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [ searchText, setSearchText ] = useState("");
 
-  const port = process.env.NEXT_PUBLIC_HOST;
-
-  const router = useRouter();
 
   //Проверка на авторизацию пользователя
   useEffect(() => {
     const checkAuthStatus = async () => {
-    try {
-      const res = await axios.get(`${port}/user/profile`, { withCredentials: true });
-
-      if (res.status === 200 && res.data) {
+      try {
+        const userData = await api.getProfile();
+        
         setLogin(true);
-        setCurrentUser(res.data);
-      } else {
-        setLogin(false);
-        setCurrentUser(null);
-      }
-    } catch (error) {
+        setCurrentUser(userData);
+        
+      } catch (error) {
         if (error.response && error.response.status === 401) {
           setLogin(false);
           setCurrentUser(null);
@@ -39,9 +37,10 @@ export default function Header() {
           setCurrentUser(null);
         }
       }
-    }
+    };
+    
     checkAuthStatus();
-  }, [port])
+  }, [api]); 
 
 
   //Обработка поиска

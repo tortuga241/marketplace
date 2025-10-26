@@ -14,359 +14,397 @@ import type {
   RequestRegisterDto,
   ResendCodeDto,
   ReviewsDto,
-  VerifyRegisterDto
-} from './model';
+  VerifyRegisterDto,
+} from "./model";
 
-import { customInstance } from '../axios-instance';
+import { customInstance } from "../axios-instance";
+export const getMarketAPI = () => {
+  const appControllerGetHello = () => {
+    return customInstance<void>({ url: `/`, method: "GET" });
+  };
 
-
-
-  export const getMarketAPI = () => {
-const appControllerGetHello = (
-    
- ) => {
-      return customInstance<void>(
-      {url: `/`, method: 'GET'
-    },
-      );
-    }
-  
-/**
- * @summary Запрос на регистрацию (отправка кода на почту)
- */
-const userControllerRequestRegister = (
+  /**
+   * @summary Запрос на регистрацию (отправка кода на почту)
+   */
+  const userControllerRequestRegister = (
     requestRegisterDto: RequestRegisterDto,
- ) => {
-      return customInstance<void>(
-      {url: `/user/request-register`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: requestRegisterDto
-    },
-      );
-    }
-  
-/**
- * @summary Подтверждение регистрации (по коду из почты)
- */
-const userControllerVerifyRegister = (
+  ) => {
+    return customInstance<void>({
+      url: `/user/request-register`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: requestRegisterDto,
+    });
+  };
+
+  /**
+   * @summary Подтверждение регистрации (по коду из почты)
+   */
+  const userControllerVerifyRegister = (
     verifyRegisterDto: VerifyRegisterDto,
- ) => {
-      return customInstance<void>(
-      {url: `/user/verify-register`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: verifyRegisterDto
-    },
-      );
-    }
-  
-/**
- * @summary Вход в аккаунт (получение JWT)
- */
-const userControllerLogin = (
-    loginDto: LoginDto,
- ) => {
-      return customInstance<void>(
-      {url: `/user/login`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: loginDto
-    },
-      );
-    }
-  
-/**
- * @summary Получение профиля текущего пользователя
- */
-const userControllerGetProfile = (
-    
- ) => {
-      return customInstance<unknown>(
-      {url: `/user/profile`, method: 'GET'
-    },
-      );
-    }
-  
-/**
- * @summary Получение профиля пользователя по ID
- */
-const userControllerGetProfileById = (
-    id: string,
- ) => {
-      return customInstance<void>(
-      {url: `/user/${id}`, method: 'GET'
-    },
-      );
-    }
-  
-/**
- * @summary Выход из аккаунта (очистка JWT cookie)
- */
-const userControllerLogout = (
-    
- ) => {
-      return customInstance<void>(
-      {url: `/user/logout`, method: 'POST'
-    },
-      );
-    }
-  
-/**
- * @summary Создать магазин
- */
-const shopControllerCreateShop = (
-    openShopDto: OpenShopDto,
- ) => {
-      return customInstance<void>(
-      {url: `/shop/create`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: openShopDto
-    },
-      );
-    }
-  
-/**
- * @summary Получить свой магазин
- */
-const shopControllerGetShop = (
-    
- ) => {
-      return customInstance<void>(
-      {url: `/shop/my`, method: 'GET'
-    },
-      );
-    }
-  
-/**
- * @summary Обновить магазин
- */
-const shopControllerUpdateShop = (
-    openShopDto: OpenShopDto,
- ) => {
-      return customInstance<void>(
-      {url: `/shop/update`, method: 'PUT',
-      headers: {'Content-Type': 'application/json', },
-      data: openShopDto
-    },
-      );
-    }
-  
-/**
- * @summary Запрос на создание лота
- */
-const lotControllerLot = (
-    lotDto: LotDto,
- ) => {
-      return customInstance<void>(
-      {url: `/lots/create`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: lotDto
-    },
-      );
-    }
-  
-/**
- * @summary Получение всех лотов (для каталога)
- */
-const lotControllerGetAllLots = (
-    
- ) => {
-      return customInstance<void>(
-      {url: `/lots`, method: 'GET'
-    },
-      );
-    }
-  
-/**
- * @summary Получение одного лота по ID
- */
-const lotControllerGetLotById = (
-    id: string,
- ) => {
-      return customInstance<void>(
-      {url: `/lots/${id}`, method: 'GET'
-    },
-      );
-    }
-  
-/**
- * @summary Удаление одного лота по ID (только владельцем)
- */
-const lotControllerDeleteOrHideLotById = (
-    id: string,
- ) => {
-      return customInstance<void>(
-      {url: `/lots/${id}`, method: 'DELETE'
-    },
-      );
-    }
-  
-/**
- * @summary Получение всех лотов конкретного продавца
- */
-const lotControllerGetLotsByAccountId = (
-    accountId: string,
- ) => {
-      return customInstance<void>(
-      {url: `/lots/by-account/${accountId}`, method: 'GET'
-    },
-      );
-    }
-  
-/**
- * @summary 1. Инициировать покупку (отправить код на почту)
- */
-const ordersControllerInitiate = (
-    createOrderDto: CreateOrderDto,
- ) => {
-      return customInstance<void>(
-      {url: `/orders/initiate`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: createOrderDto
-    },
-      );
-    }
-  
-/**
- * @summary 2. Завершить покупку (проверить код и создать заказ)
- */
-const ordersControllerComplete = (
-    completeOrderDto: CompleteOrderDto,
- ) => {
-      return customInstance<void>(
-      {url: `/orders/complete`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: completeOrderDto
-    },
-      );
-    }
-  
-/**
- * @summary 3. Отправить код верификации повторно
- */
-const ordersControllerResend = (
-    resendCodeDto: ResendCodeDto,
- ) => {
-      return customInstance<void>(
-      {url: `/orders/resend`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: resendCodeDto
-    },
-      );
-    }
-  
-/**
- * @summary Получить МОИ покупки (безопасно)
- */
-const ordersControllerFindMyPurchases = (
-    
- ) => {
-      return customInstance<void>(
-      {url: `/orders/my-purchases`, method: 'GET'
-    },
-      );
-    }
-  
-/**
- * @summary Получить МОИ продажи (безопасно)
- */
-const ordersControllerFindMySales = (
-    
- ) => {
-      return customInstance<void>(
-      {url: `/orders/my-sales`, method: 'GET'
-    },
-      );
-    }
-  
-/**
- * @summary Получить один заказ по ID
- */
-const ordersControllerFindOne = (
-    id: string,
- ) => {
-      return customInstance<void>(
-      {url: `/orders/${id}`, method: 'GET'
-    },
-      );
-    }
-  
-/**
- * @summary Создать новый отзыв
- */
-const reviewControllerCreateReview = (
-    reviewsDto: ReviewsDto,
- ) => {
-      return customInstance<void>(
-      {url: `/reviews`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: reviewsDto
-    },
-      );
-    }
-  
-/**
- * @summary Получить все отзывы для магазина (продавца)
- */
-const reviewControllerGetReviewsForShop = (
-    shopId: string,
- ) => {
-      return customInstance<void>(
-      {url: `/reviews/shop/${shopId}`, method: 'GET'
-    },
-      );
-    }
-  
-/**
- * @summary Получить все отзывы для конкретного товара (лота)
- */
-const reviewControllerGetReviewsForLot = (
-    lotId: string,
- ) => {
-      return customInstance<void>(
-      {url: `/reviews/lot/${lotId}`, method: 'GET'
-    },
-      );
-    }
-  
-/**
- * @summary Удалить отзыв
- */
-const reviewControllerDeleteReview = (
-    reviewId: string,
- ) => {
-      return customInstance<void>(
-      {url: `/reviews/${reviewId}`, method: 'DELETE'
-    },
-      );
-    }
-  
-return {appControllerGetHello,userControllerRequestRegister,userControllerVerifyRegister,userControllerLogin,userControllerGetProfile,userControllerGetProfileById,userControllerLogout,shopControllerCreateShop,shopControllerGetShop,shopControllerUpdateShop,lotControllerLot,lotControllerGetAllLots,lotControllerGetLotById,lotControllerDeleteOrHideLotById,lotControllerGetLotsByAccountId,ordersControllerInitiate,ordersControllerComplete,ordersControllerResend,ordersControllerFindMyPurchases,ordersControllerFindMySales,ordersControllerFindOne,reviewControllerCreateReview,reviewControllerGetReviewsForShop,reviewControllerGetReviewsForLot,reviewControllerDeleteReview}};
+  ) => {
+    return customInstance<void>({
+      url: `/user/verify-register`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: verifyRegisterDto,
+    });
+  };
 
-type AwaitedInput<T> = PromiseLike<T> | T;
+  /**
+   * @summary Вход в аккаунт (получение JWT)
+   */
+  const userControllerLogin = (loginDto: LoginDto) => {
+    return customInstance<void>({
+      url: `/user/login`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: loginDto,
+    });
+  };
 
-    type Awaited<O> = O extends AwaitedInput<infer T> ? T : never;
+  /**
+   * @summary Получение профиля текущего пользователя
+   */
+  const userControllerGetProfile = () => {
+    return customInstance<unknown>({ url: `/user/profile`, method: "GET" });
+  };
 
-export type AppControllerGetHelloResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMarketAPI>['appControllerGetHello']>>>
-export type UserControllerRequestRegisterResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMarketAPI>['userControllerRequestRegister']>>>
-export type UserControllerVerifyRegisterResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMarketAPI>['userControllerVerifyRegister']>>>
-export type UserControllerLoginResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMarketAPI>['userControllerLogin']>>>
-export type UserControllerGetProfileResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMarketAPI>['userControllerGetProfile']>>>
-export type UserControllerGetProfileByIdResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMarketAPI>['userControllerGetProfileById']>>>
-export type UserControllerLogoutResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMarketAPI>['userControllerLogout']>>>
-export type ShopControllerCreateShopResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMarketAPI>['shopControllerCreateShop']>>>
-export type ShopControllerGetShopResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMarketAPI>['shopControllerGetShop']>>>
-export type ShopControllerUpdateShopResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMarketAPI>['shopControllerUpdateShop']>>>
-export type LotControllerLotResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMarketAPI>['lotControllerLot']>>>
-export type LotControllerGetAllLotsResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMarketAPI>['lotControllerGetAllLots']>>>
-export type LotControllerGetLotByIdResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMarketAPI>['lotControllerGetLotById']>>>
-export type LotControllerDeleteOrHideLotByIdResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMarketAPI>['lotControllerDeleteOrHideLotById']>>>
-export type LotControllerGetLotsByAccountIdResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMarketAPI>['lotControllerGetLotsByAccountId']>>>
-export type OrdersControllerInitiateResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMarketAPI>['ordersControllerInitiate']>>>
-export type OrdersControllerCompleteResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMarketAPI>['ordersControllerComplete']>>>
-export type OrdersControllerResendResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMarketAPI>['ordersControllerResend']>>>
-export type OrdersControllerFindMyPurchasesResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMarketAPI>['ordersControllerFindMyPurchases']>>>
-export type OrdersControllerFindMySalesResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMarketAPI>['ordersControllerFindMySales']>>>
-export type OrdersControllerFindOneResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMarketAPI>['ordersControllerFindOne']>>>
-export type ReviewControllerCreateReviewResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMarketAPI>['reviewControllerCreateReview']>>>
-export type ReviewControllerGetReviewsForShopResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMarketAPI>['reviewControllerGetReviewsForShop']>>>
-export type ReviewControllerGetReviewsForLotResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMarketAPI>['reviewControllerGetReviewsForLot']>>>
-export type ReviewControllerDeleteReviewResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMarketAPI>['reviewControllerDeleteReview']>>>
+  /**
+   * @summary Получение профиля пользователя по ID
+   */
+  const userControllerGetProfileById = (id: string) => {
+    return customInstance<void>({ url: `/user/${id}`, method: "GET" });
+  };
+
+  /**
+   * @summary Выход из аккаунта (очистка JWT cookie)
+   */
+  const userControllerLogout = () => {
+    return customInstance<void>({ url: `/user/logout`, method: "POST" });
+  };
+
+  /**
+   * @summary Создать магазин
+   */
+  const shopControllerCreateShop = (openShopDto: OpenShopDto) => {
+    return customInstance<void>({
+      url: `/shop/create`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: openShopDto,
+    });
+  };
+
+  /**
+   * @summary Получить свой магазин
+   */
+  const shopControllerGetShop = () => {
+    return customInstance<void>({ url: `/shop/my`, method: "GET" });
+  };
+
+  /**
+   * @summary Обновить магазин
+   */
+  const shopControllerUpdateShop = (openShopDto: OpenShopDto) => {
+    return customInstance<void>({
+      url: `/shop/update`,
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      data: openShopDto,
+    });
+  };
+
+  /**
+   * @summary Запрос на создание лота
+   */
+  const lotControllerLot = (lotDto: LotDto) => {
+    return customInstance<void>({
+      url: `/lots/create`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: lotDto,
+    });
+  };
+
+  /**
+   * @summary Получение всех лотов (для каталога)
+   */
+  const lotControllerGetAllLots = () => {
+    return customInstance<void>({ url: `/lots`, method: "GET" });
+  };
+
+  /**
+   * @summary Получение одного лота по ID
+   */
+  const lotControllerGetLotById = (id: string) => {
+    return customInstance<void>({ url: `/lots/${id}`, method: "GET" });
+  };
+
+  /**
+   * @summary Удаление одного лота по ID (только владельцем)
+   */
+  const lotControllerDeleteOrHideLotById = (id: string) => {
+    return customInstance<void>({ url: `/lots/${id}`, method: "DELETE" });
+  };
+
+  /**
+   * @summary Получение всех лотов конкретного продавца
+   */
+  const lotControllerGetLotsByAccountId = (accountId: string) => {
+    return customInstance<void>({
+      url: `/lots/by-account/${accountId}`,
+      method: "GET",
+    });
+  };
+
+  /**
+   * @summary 1. Инициировать покупку (отправить код на почту)
+   */
+  const ordersControllerInitiate = (createOrderDto: CreateOrderDto) => {
+    return customInstance<void>({
+      url: `/orders/initiate`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: createOrderDto,
+    });
+  };
+
+  /**
+   * @summary 2. Завершить покупку (проверить код и создать заказ)
+   */
+  const ordersControllerComplete = (completeOrderDto: CompleteOrderDto) => {
+    return customInstance<void>({
+      url: `/orders/complete`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: completeOrderDto,
+    });
+  };
+
+  /**
+   * @summary 3. Отправить код верификации повторно
+   */
+  const ordersControllerResend = (resendCodeDto: ResendCodeDto) => {
+    return customInstance<void>({
+      url: `/orders/resend`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: resendCodeDto,
+    });
+  };
+
+  /**
+   * @summary Получить МОИ покупки (безопасно)
+   */
+  const ordersControllerFindMyPurchases = () => {
+    return customInstance<void>({ url: `/orders/my-purchases`, method: "GET" });
+  };
+
+  /**
+   * @summary Получить МОИ продажи (безопасно)
+   */
+  const ordersControllerFindMySales = () => {
+    return customInstance<void>({ url: `/orders/my-sales`, method: "GET" });
+  };
+
+  /**
+   * @summary Получить один заказ по ID
+   */
+  const ordersControllerFindOne = (id: string) => {
+    return customInstance<void>({ url: `/orders/${id}`, method: "GET" });
+  };
+
+  /**
+   * @summary Создать новый отзыв
+   */
+  const reviewControllerCreateReview = (reviewsDto: ReviewsDto) => {
+    return customInstance<void>({
+      url: `/reviews`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: reviewsDto,
+    });
+  };
+
+  /**
+   * @summary Получить все отзывы для магазина (продавца)
+   */
+  const reviewControllerGetReviewsForShop = (shopId: string) => {
+    return customInstance<void>({
+      url: `/reviews/shop/${shopId}`,
+      method: "GET",
+    });
+  };
+
+  /**
+   * @summary Получить все отзывы для конкретного товара (лота)
+   */
+  const reviewControllerGetReviewsForLot = (lotId: string) => {
+    return customInstance<void>({
+      url: `/reviews/lot/${lotId}`,
+      method: "GET",
+    });
+  };
+
+  /**
+   * @summary Удалить отзыв
+   */
+  const reviewControllerDeleteReview = (reviewId: string) => {
+    return customInstance<void>({
+      url: `/reviews/${reviewId}`,
+      method: "DELETE",
+    });
+  };
+
+  return {
+    appControllerGetHello,
+    userControllerRequestRegister,
+    userControllerVerifyRegister,
+    userControllerLogin,
+    userControllerGetProfile,
+    userControllerGetProfileById,
+    userControllerLogout,
+    shopControllerCreateShop,
+    shopControllerGetShop,
+    shopControllerUpdateShop,
+    lotControllerLot,
+    lotControllerGetAllLots,
+    lotControllerGetLotById,
+    lotControllerDeleteOrHideLotById,
+    lotControllerGetLotsByAccountId,
+    ordersControllerInitiate,
+    ordersControllerComplete,
+    ordersControllerResend,
+    ordersControllerFindMyPurchases,
+    ordersControllerFindMySales,
+    ordersControllerFindOne,
+    reviewControllerCreateReview,
+    reviewControllerGetReviewsForShop,
+    reviewControllerGetReviewsForLot,
+    reviewControllerDeleteReview,
+  };
+};
+export type AppControllerGetHelloResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getMarketAPI>["appControllerGetHello"]>>
+>;
+export type UserControllerRequestRegisterResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getMarketAPI>["userControllerRequestRegister"]>
+  >
+>;
+export type UserControllerVerifyRegisterResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getMarketAPI>["userControllerVerifyRegister"]>
+  >
+>;
+export type UserControllerLoginResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getMarketAPI>["userControllerLogin"]>>
+>;
+export type UserControllerGetProfileResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getMarketAPI>["userControllerGetProfile"]>
+  >
+>;
+export type UserControllerGetProfileByIdResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getMarketAPI>["userControllerGetProfileById"]>
+  >
+>;
+export type UserControllerLogoutResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getMarketAPI>["userControllerLogout"]>>
+>;
+export type ShopControllerCreateShopResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getMarketAPI>["shopControllerCreateShop"]>
+  >
+>;
+export type ShopControllerGetShopResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getMarketAPI>["shopControllerGetShop"]>>
+>;
+export type ShopControllerUpdateShopResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getMarketAPI>["shopControllerUpdateShop"]>
+  >
+>;
+export type LotControllerLotResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getMarketAPI>["lotControllerLot"]>>
+>;
+export type LotControllerGetAllLotsResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getMarketAPI>["lotControllerGetAllLots"]>
+  >
+>;
+export type LotControllerGetLotByIdResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getMarketAPI>["lotControllerGetLotById"]>
+  >
+>;
+export type LotControllerDeleteOrHideLotByIdResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getMarketAPI>["lotControllerDeleteOrHideLotById"]
+    >
+  >
+>;
+export type LotControllerGetLotsByAccountIdResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getMarketAPI>["lotControllerGetLotsByAccountId"]
+    >
+  >
+>;
+export type OrdersControllerInitiateResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getMarketAPI>["ordersControllerInitiate"]>
+  >
+>;
+export type OrdersControllerCompleteResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getMarketAPI>["ordersControllerComplete"]>
+  >
+>;
+export type OrdersControllerResendResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getMarketAPI>["ordersControllerResend"]>>
+>;
+export type OrdersControllerFindMyPurchasesResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getMarketAPI>["ordersControllerFindMyPurchases"]
+    >
+  >
+>;
+export type OrdersControllerFindMySalesResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getMarketAPI>["ordersControllerFindMySales"]>
+  >
+>;
+export type OrdersControllerFindOneResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getMarketAPI>["ordersControllerFindOne"]>
+  >
+>;
+export type ReviewControllerCreateReviewResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getMarketAPI>["reviewControllerCreateReview"]>
+  >
+>;
+export type ReviewControllerGetReviewsForShopResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getMarketAPI>["reviewControllerGetReviewsForShop"]
+    >
+  >
+>;
+export type ReviewControllerGetReviewsForLotResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getMarketAPI>["reviewControllerGetReviewsForLot"]
+    >
+  >
+>;
+export type ReviewControllerDeleteReviewResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getMarketAPI>["reviewControllerDeleteReview"]>
+  >
+>;

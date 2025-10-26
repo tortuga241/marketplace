@@ -1,13 +1,16 @@
 "use client";
-import { cache, useState } from "react";
-import styles from './register.module.css';
+
+import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import axios from 'axios';
 import { useRouter } from "next/navigation";
+
+import styles from './register.module.css';
+import { useApi } from "../src/hooks/useApi";
 
 export default function Register() {
 
     const router = useRouter()
+    const api = useApi();
 
     const [ isLogin, setIsLogin ] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
@@ -16,39 +19,34 @@ export default function Register() {
     const [login, setLogin] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [code, setCode] = useState("");
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
 
-    const port = process.env.NEXT_PUBLIC_HOST;
 
     //Вход в аккаунт
     const handleLogin = async () => {
-        if(!email || !password) {
-            setError("Все поля обязательны!")
+        if (!email || !password) {
+            setError("Все поля обязательны!");
             return;
         }
         try {
-            const res = await axios.post(`${port}/user/login`, {
-                email,
-                password,
-            }, { withCredentials: true });
+            await api.login({ email, password });
 
-            const data = res.data;
-            router.push("/")
-            console.log("Ответ сервера при логине:", data);
-        } catch (err) {
+            router.push("/");
+            console.log("Успешный вход!");
+        } catch (error) {
             if (err.response) {
                 if (err.response.status === 404 || err.response.status === 400 || err.response.status === 401) {
                     setError("Аккаунт не найден. Хотите зарегистрироваться?");
                 } else {
-                    setError(err.response.data.message || "Ошибка входа");
+                    setError(err.response.data?.message || "Ошибка входа");
                 }
             } else {
                 setError("Ошибка сети");
             }
         }
-     };
+    };
+
 
     //Регистрация аккаунта
     const handleReg = async () => {
@@ -57,13 +55,8 @@ export default function Register() {
             return;
         }
         try {   
-            const res = await axios.post(`${port}/user/request-register`, {
-                login,
-                email,
-                password
-            }, { withCredentials: true });
-            setMessage(res.data.message);
-            const data = res.data;
+            await api.requestRegister({ login, email, password })
+            setMessage("Код подтверждения отправлен на почту");
             router.push("/register/verify")
         } catch (err) {
             if (err.response) {
@@ -73,29 +66,6 @@ export default function Register() {
             }
         }
     };
-
-    //Верификация
-    const handleVerify = async () => {
-        if(!email || !code) {
-            setError("Все поля обязательны!")
-            return;
-        }
-        try {
-            const res = await axios.post(`${port}/user/verify-register`, {
-                email,
-                code
-            });
-            setMessage(res.data.message);
-            
-        } catch (err) {
-            if (err.response) {
-                setError(err.response.data.message || "Ошибка подтверждения");
-            } else {
-                setError("Ошибка сети");
-            }
-        }
-    };
-
 
 
     return (
