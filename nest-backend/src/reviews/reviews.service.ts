@@ -136,4 +136,32 @@ export class reviewService {
     });
   }
 
+
+  //DELETE запрос на удаление отзыва по айди
+  async deleteReview(reviewId: string, accountId: string) {
+        
+        const review = await prisma.review.findUnique({
+            where: { id: reviewId },
+            select: { accountId: true }
+        });
+
+        if (!review) {
+            throw new NotFoundException('Отзыв не найден');
+        }
+
+        if (review.accountId !== accountId) {
+            throw new ForbiddenException('У вас нет прав на удаление этого отзыва');
+        }
+
+        //Удаляем
+        try {
+            await prisma.review.delete({
+                where: { id: reviewId }
+            });
+            return; 
+        } catch (error) {
+            console.error("Ошибка при удалении отзыва:", error);
+            throw new InternalServerErrorException('Не удалось удалить отзыв');
+        }
+    }
 }

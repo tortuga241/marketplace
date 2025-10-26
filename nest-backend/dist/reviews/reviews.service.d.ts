@@ -40,4 +40,5 @@ export declare class reviewService {
         rating: number;
         articleId: string | null;
     })[]>;
+    deleteReview(reviewId: string, accountId: string): Promise<void>;
 }

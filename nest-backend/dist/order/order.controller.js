@@ -56,7 +56,6 @@ exports.OrdersController = OrdersController;
 __decorate([
     (0, common_1.Post)('initiate'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
-    (0, swagger_1.ApiBearerAuth)(),
     (0, swagger_1.ApiOperation)({ summary: '1. Инициировать покупку (отправить код на почту)' }),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Req)()),
@@ -68,7 +67,6 @@ __decorate([
 __decorate([
     (0, common_1.Post)('complete'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
-    (0, swagger_1.ApiBearerAuth)(),
     (0, swagger_1.ApiOperation)({ summary: '2. Завершить покупку (проверить код и создать заказ)' }),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Req)()),
@@ -79,7 +77,6 @@ __decorate([
 __decorate([
     (0, common_1.Post)('resend'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
-    (0, swagger_1.ApiBearerAuth)(),
     (0, swagger_1.ApiOperation)({ summary: '3. Отправить код верификации повторно' }),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Req)()),
@@ -90,7 +87,6 @@ __decorate([
 __decorate([
     (0, common_1.Get)('my-purchases'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
-    (0, swagger_1.ApiBearerAuth)(),
     (0, swagger_1.ApiOperation)({ summary: 'Получить МОИ покупки (безопасно)' }),
     __param(0, (0, current_user_decorator_1.CurrentUser)('id')),
     __metadata("design:type", Function),
@@ -100,7 +96,6 @@ __decorate([
 __decorate([
     (0, common_1.Get)('my-sales'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
-    (0, swagger_1.ApiBearerAuth)(),
     (0, swagger_1.ApiOperation)({ summary: 'Получить МОИ продажи (безопасно)' }),
     (0, swagger_1.ApiOperation)({ summary: 'Получить МОИ продажи (безопасно)' }),
     __param(0, (0, current_user_decorator_1.CurrentUser)('id')),
@@ -111,7 +106,6 @@ __decorate([
 __decorate([
     (0, common_1.Get)(':id'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
-    (0, swagger_1.ApiBearerAuth)(),
     (0, swagger_1.ApiOperation)({ summary: 'Получить один заказ по ID' }),
     (0, swagger_1.ApiParam)({ name: 'id', description: 'UUID Заказа' }),
     __param(0, (0, common_1.Param)('id', common_1.ParseUUIDPipe)),

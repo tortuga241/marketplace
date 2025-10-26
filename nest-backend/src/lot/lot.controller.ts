@@ -2,7 +2,7 @@ import { Controller, Post, Get, Delete, Param, Body, Headers, ParseUUIDPipe, Htt
 import { BadRequestException } from "@nestjs/common";
 import { LotService } from "./lot.service";
 import { LotDto } from "./dto/lot.dto";
-import { ApiTags, ApiOperation, ApiResponse, ApiHeader, ApiParam, ApiBearerAuth } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiResponse, ApiHeader, ApiParam } from "@nestjs/swagger";
 import { AuthGuard } from '@nestjs/passport';
 import { CurrentUser } from "src/auth/current-user.decorator";
 
@@ -67,7 +67,6 @@ export class LotController {
     @Delete(':id')
     @HttpCode(200)
     @UseGuards(AuthGuard('jwt'))
-    @ApiBearerAuth() 
     @ApiOperation({ summary: 'Удаление одного лота по ID (только владельцем)' })
     @ApiParam({ name: 'id', description: 'Уникальный ID лота (UUID)', required: true, type: 'string' })
     @ApiResponse({ status: 200, description: 'Лот успешно удален' })

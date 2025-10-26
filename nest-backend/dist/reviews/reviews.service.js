@@ -109,6 +109,28 @@ let reviewService = class reviewService {
             },
         });
     }
+    async deleteReview(reviewId, accountId) {
+        const review = await prisma.review.findUnique({
+            where: { id: reviewId },
+            select: { accountId: true }
+        });
+        if (!review) {
+            throw new common_1.NotFoundException('Отзыв не найден');
+        }
+        if (review.accountId !== accountId) {
+            throw new common_1.ForbiddenException('У вас нет прав на удаление этого отзыва');
+        }
+        try {
+            await prisma.review.delete({
+                where: { id: reviewId }
+            });
+            return;
+        }
+        catch (error) {
+            console.error("Ошибка при удалении отзыва:", error);
+            throw new common_1.InternalServerErrorException('Не удалось удалить отзыв');
+        }
+    }
 };
 exports.reviewService = reviewService;
 exports.reviewService = reviewService = __decorate([

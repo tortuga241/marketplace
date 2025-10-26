@@ -101,7 +101,6 @@ __decorate([
     (0, common_1.Delete)(':id'),
     (0, common_1.HttpCode)(200),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
-    (0, swagger_1.ApiBearerAuth)(),
     (0, swagger_1.ApiOperation)({ summary: 'Удаление одного лота по ID (только владельцем)' }),
     (0, swagger_1.ApiParam)({ name: 'id', description: 'Уникальный ID лота (UUID)', required: true, type: 'string' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Лот успешно удален' }),

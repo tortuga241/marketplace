@@ -1,11 +1,10 @@
-import { Controller, Get, Param, Post, Body, Req, UseGuards, UnauthorizedException, ParseUUIDPipe } from '@nestjs/common';
+import { Controller,Delete, Get, Param, Post, Body, Req, UseGuards, UnauthorizedException, ParseUUIDPipe, HttpCode } from '@nestjs/common';
 import { reviewService } from './reviews.service';
 import { ReviewsDto } from './dto/reviews.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @ApiTags('Reviews (Отзывы)')
-@ApiBearerAuth() 
 @Controller('reviews')
 export class ReviewController {
     constructor(private readonly reviewService: reviewService) {}
@@ -45,5 +44,26 @@ export class ReviewController {
     @ApiResponse({ status: 404, description: 'Лот не найден.' })
     async getReviewsForLot( @Param('lotId', ParseUUIDPipe) lotId: string ) {
         return this.reviewService.getReviewsForLot(lotId);
+    }
+
+    //DELETE удалить отзыв по ID
+    @UseGuards(AuthGuard('jwt'))
+    @Delete(':reviewId')
+    @HttpCode(204)
+    @ApiOperation({ summary: 'Удалить отзыв' })
+    @ApiResponse({ status: 204, description: 'Отзыв успешно удален.' })
+    @ApiResponse({ status: 401, description: 'Пользователь не авторизован.' })
+    @ApiResponse({ status: 403, description: 'У пользователя нет прав на удаление этого отзыва.' })
+    @ApiResponse({ status: 404, description: 'Отзыв не найден.' })
+    async deleteReview(
+        @Req() req: any,
+        @Param('reviewId', ParseUUIDPipe) reviewId: string
+    ) {
+        const accountId = req.user.id;
+        if (!accountId) {
+            throw new UnauthorizedException('Не удалось определить ID пользователя из токена');
+        }
+
+        return this.reviewService.deleteReview(reviewId, accountId);
     }
 }

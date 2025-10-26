@@ -37,6 +37,13 @@ let ReviewController = class ReviewController {
     async getReviewsForLot(lotId) {
         return this.reviewService.getReviewsForLot(lotId);
     }
+    async deleteReview(req, reviewId) {
+        const accountId = req.user.id;
+        if (!accountId) {
+            throw new common_1.UnauthorizedException('Не удалось определить ID пользователя из токена');
+        }
+        return this.reviewService.deleteReview(reviewId, accountId);
+    }
 };
 exports.ReviewController = ReviewController;
 __decorate([
@@ -74,9 +81,23 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ReviewController.prototype, "getReviewsForLot", null);
+__decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, common_1.Delete)(':reviewId'),
+    (0, common_1.HttpCode)(204),
+    (0, swagger_1.ApiOperation)({ summary: 'Удалить отзыв' }),
+    (0, swagger_1.ApiResponse)({ status: 204, description: 'Отзыв успешно удален.' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Пользователь не авторизован.' }),
+    (0, swagger_1.ApiResponse)({ status: 403, description: 'У пользователя нет прав на удаление этого отзыва.' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Отзыв не найден.' }),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('reviewId', common_1.ParseUUIDPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], ReviewController.prototype, "deleteReview", null);
 exports.ReviewController = ReviewController = __decorate([
     (0, swagger_1.ApiTags)('Reviews (Отзывы)'),
-    (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.Controller)('reviews'),
     __metadata("design:paramtypes", [reviews_service_1.reviewService])
 ], ReviewController);

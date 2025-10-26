@@ -43,4 +43,5 @@ export declare class ReviewController {
         rating: number;
         articleId: string | null;
     })[]>;
+    deleteReview(req: any, reviewId: string): Promise<void>;
 }

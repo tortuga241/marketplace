@@ -1,0 +1,866 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "AppController_getHello",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/user/request-register": {
+      "post": {
+        "operationId": "UserController_requestRegister",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestRegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Код отправлен на почту."
+          },
+          "400": {
+            "description": "Ошибка валидации данных."
+          }
+        },
+        "summary": "Запрос на регистрацию (отправка кода на почту)",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/user/verify-register": {
+      "post": {
+        "operationId": "UserController_verifyRegister",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyRegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Аккаунт успешно зарегистрирован."
+          },
+          "400": {
+            "description": "Неверный код подтверждения."
+          }
+        },
+        "summary": "Подтверждение регистрации (по коду из почты)",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/user/login": {
+      "post": {
+        "operationId": "UserController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Вход успешен, cookie установлена."
+          },
+          "401": {
+            "description": "Неверный email или пароль."
+          }
+        },
+        "summary": "Вход в аккаунт (получение JWT)",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/user/profile": {
+      "get": {
+        "operationId": "UserController_getProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Данные пользователя.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "...",
+                    "login": "testuser",
+                    "email": "test@example.com"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Пользователь не авторизован."
+          }
+        },
+        "summary": "Получение профиля текущего пользователя",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/user/{id}": {
+      "get": {
+        "operationId": "UserController_getProfileById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Данные пользователя."
+          },
+          "404": {
+            "description": "Пользователь не найден."
+          }
+        },
+        "summary": "Получение профиля пользователя по ID",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/user/logout": {
+      "post": {
+        "operationId": "UserController_logout",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Выход успешен, cookie удалены"
+          }
+        },
+        "summary": "Выход из аккаунта (очистка JWT cookie)",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/shop/create": {
+      "post": {
+        "operationId": "ShopController_createShop",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpenShopDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Магазин создан"
+          }
+        },
+        "summary": "Создать магазин",
+        "tags": [
+          "Shop"
+        ]
+      }
+    },
+    "/shop/my": {
+      "get": {
+        "operationId": "ShopController_getShop",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Получить свой магазин",
+        "tags": [
+          "Shop"
+        ]
+      }
+    },
+    "/shop/update": {
+      "put": {
+        "operationId": "ShopController_updateShop",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpenShopDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Обновить магазин",
+        "tags": [
+          "Shop"
+        ]
+      }
+    },
+    "/lots/create": {
+      "post": {
+        "operationId": "LotController_lot",
+        "parameters": [
+          {
+            "name": "x-shop-id",
+            "required": true,
+            "in": "header",
+            "description": "Уникальный ID магазина",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-account-id",
+            "required": true,
+            "in": "header",
+            "description": "Уникальный ID аккаунта владельца",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LotDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Лот успешно создан!"
+          },
+          "400": {
+            "description": "Не переданы обязательные заголовки x-shop-id или x-account-id."
+          },
+          "401": {
+            "description": "Ошибка авторизации (магазин/аккаунт не найден или не является владельцем)"
+          }
+        },
+        "summary": "Запрос на создание лота",
+        "tags": [
+          "Lot"
+        ]
+      }
+    },
+    "/lots": {
+      "get": {
+        "operationId": "LotController_getAllLots",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Список всех лотов успешно получен."
+          },
+          "500": {
+            "description": "Внутренняя ошибка сервера."
+          }
+        },
+        "summary": "Получение всех лотов (для каталога)",
+        "tags": [
+          "Lot"
+        ]
+      }
+    },
+    "/lots/{id}": {
+      "get": {
+        "operationId": "LotController_getLotById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Уникальный ID лота (UUID)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Лот успешно найден."
+          },
+          "400": {
+            "description": "Неверный формат ID."
+          },
+          "404": {
+            "description": "Лот с указанным ID не найден."
+          }
+        },
+        "summary": "Получение одного лота по ID",
+        "tags": [
+          "Lot"
+        ]
+      },
+      "delete": {
+        "operationId": "LotController_deleteOrHideLotById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Уникальный ID лота (UUID)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Лот успешно удален"
+          },
+          "401": {
+            "description": "Пользователь не авторизован"
+          },
+          "403": {
+            "description": "Нет прав для удаления (не владелец)"
+          },
+          "404": {
+            "description": "Лот с указанным ID не найден"
+          }
+        },
+        "summary": "Удаление одного лота по ID (только владельцем)",
+        "tags": [
+          "Lot"
+        ]
+      }
+    },
+    "/lots/by-account/{accountId}": {
+      "get": {
+        "operationId": "LotController_getLotsByAccountId",
+        "parameters": [
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "description": "Уникальный ID аккаунта продавца",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список лотов продавца успешно получен."
+          },
+          "404": {
+            "description": "Продавец с указанным ID не найден."
+          }
+        },
+        "summary": "Получение всех лотов конкретного продавца",
+        "tags": [
+          "Lot"
+        ]
+      }
+    },
+    "/orders/initiate": {
+      "post": {
+        "operationId": "OrdersController_initiate",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "1. Инициировать покупку (отправить код на почту)",
+        "tags": [
+          "orders"
+        ]
+      }
+    },
+    "/orders/complete": {
+      "post": {
+        "operationId": "OrdersController_complete",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompleteOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "2. Завершить покупку (проверить код и создать заказ)",
+        "tags": [
+          "orders"
+        ]
+      }
+    },
+    "/orders/resend": {
+      "post": {
+        "operationId": "OrdersController_resend",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResendCodeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "3. Отправить код верификации повторно",
+        "tags": [
+          "orders"
+        ]
+      }
+    },
+    "/orders/my-purchases": {
+      "get": {
+        "operationId": "OrdersController_findMyPurchases",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Получить МОИ покупки (безопасно)",
+        "tags": [
+          "orders"
+        ]
+      }
+    },
+    "/orders/my-sales": {
+      "get": {
+        "operationId": "OrdersController_findMySales",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Получить МОИ продажи (безопасно)",
+        "tags": [
+          "orders"
+        ]
+      }
+    },
+    "/orders/{id}": {
+      "get": {
+        "operationId": "OrdersController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID Заказа",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Получить один заказ по ID",
+        "tags": [
+          "orders"
+        ]
+      }
+    },
+    "/reviews": {
+      "post": {
+        "operationId": "ReviewController_createReview",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Отзыв успешно создан."
+          },
+          "400": {
+            "description": "Неверный запрос (напр., отзыв уже существует)."
+          },
+          "401": {
+            "description": "Пользователь не авторизован."
+          },
+          "404": {
+            "description": "Магазин или лот не найден."
+          },
+          "500": {
+            "description": "Внутренняя ошибка сервера."
+          }
+        },
+        "summary": "Создать новый отзыв",
+        "tags": [
+          "Reviews (Отзывы)"
+        ]
+      }
+    },
+    "/reviews/shop/{shopId}": {
+      "get": {
+        "operationId": "ReviewController_getReviewsForShop",
+        "parameters": [
+          {
+            "name": "shopId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список отзывов успешно получен."
+          },
+          "404": {
+            "description": "Магазин не найден."
+          }
+        },
+        "summary": "Получить все отзывы для магазина (продавца)",
+        "tags": [
+          "Reviews (Отзывы)"
+        ]
+      }
+    },
+    "/reviews/lot/{lotId}": {
+      "get": {
+        "operationId": "ReviewController_getReviewsForLot",
+        "parameters": [
+          {
+            "name": "lotId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список отзывов успешно получен."
+          },
+          "404": {
+            "description": "Лот не найден."
+          }
+        },
+        "summary": "Получить все отзывы для конкретного товара (лота)",
+        "tags": [
+          "Reviews (Отзывы)"
+        ]
+      }
+    },
+    "/reviews/{reviewId}": {
+      "delete": {
+        "operationId": "ReviewController_deleteReview",
+        "parameters": [
+          {
+            "name": "reviewId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Отзыв успешно удален."
+          },
+          "401": {
+            "description": "Пользователь не авторизован."
+          },
+          "403": {
+            "description": "У пользователя нет прав на удаление этого отзыва."
+          },
+          "404": {
+            "description": "Отзыв не найден."
+          }
+        },
+        "summary": "Удалить отзыв",
+        "tags": [
+          "Reviews (Отзывы)"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Market API",
+    "description": "Документация к моему API",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [
+    {
+      "name": "users",
+      "description": ""
+    }
+  ],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "RequestRegisterDto": {
+        "type": "object",
+        "properties": {
+          "login": {
+            "type": "string",
+            "example": "Bob",
+            "description": "Login пользователя"
+          },
+          "email": {
+            "type": "string",
+            "example": "example@gmail.com",
+            "description": "Email пользователя"
+          },
+          "password": {
+            "type": "string",
+            "example": "qwerty",
+            "description": "Password пользователя"
+          }
+        },
+        "required": [
+          "login",
+          "email",
+          "password"
+        ]
+      },
+      "VerifyRegisterDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "expamle@gmail.com",
+            "description": "Email пользователя"
+          },
+          "code": {
+            "type": "string",
+            "example": "321654",
+            "description": "Code подтверждения с почты"
+          }
+        },
+        "required": [
+          "email",
+          "code"
+        ]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "example@gmail.com",
+            "description": "Email пользователя"
+          },
+          "password": {
+            "type": "string",
+            "example": "strongPassword123",
+            "description": "Пароль пользователя"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "OpenShopDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "DocsShop",
+            "description": "Название магазина"
+          },
+          "type": {
+            "type": "string",
+            "example": "Docs",
+            "description": "Тип магазина"
+          },
+          "description": {
+            "type": "string",
+            "example": "The best shop",
+            "description": "Описание магазина"
+          },
+          "phone": {
+            "type": "string",
+            "example": "+ 777 333 68 07",
+            "description": "Номер телефона продавца"
+          }
+        },
+        "required": [
+          "title",
+          "type",
+          "description",
+          "phone"
+        ]
+      },
+      "LotDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Курс по WEB разработке",
+            "description": "Название продукта"
+          },
+          "cost": {
+            "type": "string",
+            "example": "20.000₸",
+            "description": "Стоимость продукта"
+          },
+          "type": {
+            "type": "string",
+            "example": "Видео",
+            "description": "Тип продукта"
+          },
+          "description": {
+            "type": "string",
+            "example": "Углубленный курс по WEB разработке",
+            "description": "Описание продукта"
+          }
+        },
+        "required": [
+          "title",
+          "cost",
+          "type",
+          "description"
+        ]
+      },
+      "CreateOrderDto": {
+        "type": "object",
+        "properties": {
+          "lotId": {
+            "type": "string",
+            "example": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+            "description": "ID лота, который хотят купить"
+          }
+        },
+        "required": [
+          "lotId"
+        ]
+      },
+      "CompleteOrderDto": {
+        "type": "object",
+        "properties": {
+          "verificationId": {
+            "type": "string",
+            "description": "ID записи о верификации (из /initiate)"
+          },
+          "code": {
+            "type": "string",
+            "description": "6-значный код из письма"
+          }
+        },
+        "required": [
+          "verificationId",
+          "code"
+        ]
+      },
+      "ResendCodeDto": {
+        "type": "object",
+        "properties": {
+          "verificationId": {
+            "type": "string",
+            "description": "ID записи о верификации (из /initiate)"
+          }
+        },
+        "required": [
+          "verificationId"
+        ]
+      },
+      "ReviewsDto": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "example": "Качество на высоте, автор реально крут!",
+            "description": "Text-content отзыва"
+          },
+          "rating": {
+            "type": "number",
+            "example": "5",
+            "description": "Рейтинг от 1 до 5"
+          },
+          "shopId": {
+            "type": "string",
+            "example": "uuid-shop-123",
+            "description": "ID магазина (продавца), к которому отзыв"
+          },
+          "lotId": {
+            "type": "string",
+            "example": "uuid-lot-456",
+            "description": "ID лота (если отзыв о лоте)"
+          }
+        },
+        "required": [
+          "description",
+          "rating",
+          "shopId"
+        ]
+      }
+    }
+  }
+}

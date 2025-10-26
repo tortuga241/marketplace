@@ -3,7 +3,7 @@ import { OrdersService } from './order.service';
 import { CreateOrderDto } from './dto/order-create.dto';
 import { CompleteOrderDto } from './dto/order-complete.dto';
 import { ResendCodeDto } from './dto/order-resend.dto';
-import { ApiTags, ApiBearerAuth, ApiOperation, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { CurrentUser } from '../auth/current-user.decorator';
 
@@ -17,7 +17,6 @@ export class OrdersController {
   // 1. Инициировать покупку (создать OrderVerification, отправить код)
   @Post('initiate')
   @UseGuards(AuthGuard('jwt'))
-  @ApiBearerAuth()
   @ApiOperation({ summary: '1. Инициировать покупку (отправить код на почту)' })
   initiate( @Body() createOrderDto: CreateOrderDto, @Req() req: AuthenticatedRequest, @CurrentUser('id') buyerAccountId: string ) {
     return this.ordersService.initiatePurchase( createOrderDto, buyerAccountId );
@@ -26,7 +25,6 @@ export class OrdersController {
   // 2. Завершить покупку (проверить код, создать Order)
   @Post('complete')
   @UseGuards(AuthGuard('jwt'))
-  @ApiBearerAuth()
   @ApiOperation({ summary: '2. Завершить покупку (проверить код и создать заказ)' })
   complete(
     @Body() completeOrderDto: CompleteOrderDto,
@@ -39,7 +37,6 @@ export class OrdersController {
   // 3. Отправить код повторно
   @Post('resend')
   @UseGuards(AuthGuard('jwt'))
-  @ApiBearerAuth()
   @ApiOperation({ summary: '3. Отправить код верификации повторно' })
   resend(
     @Body() resendCodeDto: ResendCodeDto,
@@ -54,7 +51,6 @@ export class OrdersController {
   //Безопасные запросы для получения заказов
   @Get('my-purchases')
   @UseGuards(AuthGuard('jwt'))
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'Получить МОИ покупки (безопасно)' })
   findMyPurchases(@CurrentUser('id') buyerId: string) { // <--- ИЗМЕНЕНО
     console.log('Current user ID:', buyerId); // <--- Теперь тут будет реальный ID
@@ -63,7 +59,6 @@ export class OrdersController {
 
   @Get('my-sales')
   @UseGuards(AuthGuard('jwt'))
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'Получить МОИ продажи (безопасно)' })
   @ApiOperation({ summary: 'Получить МОИ продажи (безопасно)' })
   findMySales(@CurrentUser('id') sellerId: string) { // <--- ИЗМЕНЕНО
@@ -73,7 +68,6 @@ export class OrdersController {
   //GET запрос на получение по ID
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'Получить один заказ по ID' })
   @ApiParam({ name: 'id', description: 'UUID Заказа' })
   async findOne( @Param('id', ParseUUIDPipe) id: string, @Req() req: AuthenticatedRequest,) {
