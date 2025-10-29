@@ -3,8 +3,9 @@ import styles from './styles.module.css';
 import Header from '../components/Header';
 import { Filter, ChevronDown, ChevronUp } from 'lucide-react';
 import { useState, useMemo, useEffect } from 'react'; 
-import axios from 'axios';
 import { useSearchParams } from 'next/navigation';
+
+import { useApi } from '../src/hooks/useApi';
 
 //Import comps
 import CardProduct from '../components/UI/catalog/cardProduct';
@@ -19,21 +20,24 @@ export default function CatalogPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const port = process.env.NEXT_PUBLIC_HOST;
+    const api = useApi();
 
     //GET запрос на вывод информации о всех товарах
     useEffect(() => {
       const fetchAllLotsWithRatings = async () => {
         try { 
-          const lotsResponse = await axios.get(`${port}/lots`);
-          const lots = lotsResponse.data;
+
+          const lotsResponse = await api.getAllLots();
+          const lots = lotsResponse;
+          console.log("ALL LOTS:",lotsResponse);
 
           const productsWithRatings = await Promise.all(
             lots.map(async (lot) => {
               try {
                 // Получаем все отзывы для этого лота
-                const reviewsResponse = await axios.get(`${port}/reviews/lot/${lot.id}`);
-                const reviews = reviewsResponse.data;
+                const reviewsResponse = await api.getReviewsForLot( lot.id );
+                const reviews = reviewsResponse;
+                console.log("Количество лотов:", reviews.length)
               
                 const reviewCount = reviews.length;
                 const averageRating = reviewCount > 0 

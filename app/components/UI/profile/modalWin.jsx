@@ -3,7 +3,8 @@
 import React, { useState } from 'react';
 import styles from './styles/modal.module.css'; 
 import { X } from 'lucide-react';
-import axios from 'axios';
+
+import { useApi } from '../../../src/hooks/useApi';
 
 export default function CreateProductModal({ onClose, shopId, accountId, onLotCreated }) {
     
@@ -16,7 +17,7 @@ export default function CreateProductModal({ onClose, shopId, accountId, onLotCr
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const host = process.env.NEXT_PUBLIC_HOST;
+    const api = useApi();
 
     const productTypes = [
         { value: 'video', label: 'Видео' },
@@ -32,8 +33,10 @@ export default function CreateProductModal({ onClose, shopId, accountId, onLotCr
         e.preventDefault();
         
         console.log({ title, price, type, description });
-        console.log(shopId);
-        console.log(accountId);
+        console.log('Shop ID:', shopId);
+        console.log('Account ID:', accountId);
+
+        console.log("Тип данных shopId:", typeof shopId);
 
         setError(null);
         setIsLoading(true);
@@ -41,21 +44,22 @@ export default function CreateProductModal({ onClose, shopId, accountId, onLotCr
         const lotData = {
             title,
             description,
-            cost: parseFloat(price.replace(/ /g, '')),
+            cost: price.replace(/ /g, ''),
             type
         };
 
-        console.log(lotData);
+        console.log('Данные для создания лота:', lotData);
 
         try {
-            const response = await axios.post(`${host}/lots/create`, lotData, {
+            
+            const response = await api.createOrUpdateLot(lotData, {
                 headers: {
-                    'x-shop-id': shopId,
-                    'x-account-id': accountId,
+                    "x-shop-id": shopId,
+                    "x-account-id": accountId,
                 }
             });
 
-            const newLot = response.data;
+            const newLot = response;
             console.log('Лот успешно создан:', newLot);
             
             if (onLotCreated) {
@@ -65,12 +69,19 @@ export default function CreateProductModal({ onClose, shopId, accountId, onLotCr
             onClose();
 
         } catch (err) {
-            let errorMessage = 'Произошла сетевая ошибка';
-            if (err.response && err.response.data && err.response.data.message) {
+            console.error('Ошибка при создании лота:', err);
+            
+            let errorMessage = 'Произошла ошибка при создании товара';
+            
+            if (err.response?.status === 400) {
+                errorMessage = 'Не переданы обязательные заголовки x-shop-id или x-account-id';
+            } else if (err.response?.status === 401) {
+                errorMessage = 'Ошибка авторизации (магазин/аккаунт не найден или не является владельцем)';
+            } else if (err.response?.data?.message) {
                 errorMessage = err.response.data.message;
             }
+            
             setError(errorMessage);
-            console.error('Ошибка при создании лота:', err);
         } finally {
             setIsLoading(false);
         }

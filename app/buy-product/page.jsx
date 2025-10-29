@@ -2,10 +2,11 @@
 
 import { useState, useRef, useEffect } from 'react';
 import styles from './styles.module.css';
-import axios from 'axios';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import QRCodeGenerator from '../components/UI/buyProduct/qr';
+
+import { useApi } from '../src/hooks/useApi';
 
 export default function BuyProduct() {
     const router = useRouter();
@@ -14,7 +15,7 @@ export default function BuyProduct() {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
 
-    const host = process.env.NEXT_PUBLIC_HOST;
+    const api = useApi();
 
     const [currentStep, setCurrentStep] = useState(1); 
     const [code, setCode] = useState(['', '', '', '', '', '']);
@@ -35,12 +36,16 @@ export default function BuyProduct() {
 
     // Загрузка данных о продукте при получении lotId
     useEffect(() => {
-        if (lotId) {
-            fetchProductData(lotId);
+        const id = searchParams.get('lotId');
+        console.log("Lot id:", id);
+        console.log("Тип lotId:", typeof id);
+        
+        if (id && id !== 'null' && id !== 'undefined') {
+            fetchProductData(id);
         } else {
             setError('ID товара не указан');
         }
-    }, [lotId]);
+    }, [searchParams]);
 
     // Функция загрузки данных о продукте
     const fetchProductData = async (id) => {
@@ -49,14 +54,19 @@ export default function BuyProduct() {
             setError(null);
             
             console.log('Загружаем данные для лота:', id);
+            console.log('Тип id в функции:', typeof id);
             
-            // Запрос к вашему API для получения данных о лоте
-            const response = await axios.get(`${host}/lots/${id}`);
-            console.log('Данные о товаре получены:', response.data);
+            // Явно преобразуем к строке на всякий случай
+            const stringId = String(id);
+            console.log('ID после преобразования:', stringId);
             
-            setProduct(response.data);
+            const response = await api.getLotById(stringId);
+            console.log('Полный ответ:', response);
+            console.log('Данные о товаре получены:', response.title);
+            setProduct(response);
         } catch (err) {
             console.error('Ошибка при загрузке данных о товаре:', err);
+            console.error('Детали ошибки:', err.response?.data);
             setError('Не удалось загрузить информацию о товаре');
         } finally {
             setIsLoading(false);
@@ -120,13 +130,9 @@ export default function BuyProduct() {
         try {
             console.log('Инициирование покупки...');
             
-            const response = await axios.post(
-                `${host}/orders/initiate`, 
-                { lotId: product.id }, 
-                { withCredentials: true }
-            );
+            const response = await api.initiateOrder({ lotId: product.id })
             
-            const data = response.data;
+            const data = response;
             console.log('Ответ от сервера:', data);
 
             setVerificationId(data.verificationId);
@@ -161,11 +167,8 @@ export default function BuyProduct() {
         setError(null);
 
         try {
-            const response = await axios.post(
-                `${host}/orders/resend`,
-                { verificationId },
-                { withCredentials: true }
-            );
+
+            await api.resendOrder({ verificationId: verificationId })
 
             setSuccess('Код отправлен повторно!');
             setCanResend(false);
@@ -195,17 +198,10 @@ export default function BuyProduct() {
 
         try {
             const verificationCode = code.join('');
-            
-            const response = await axios.post(
-                `${host}/orders/complete`,
-                {
-                    verificationId,
-                    code: verificationCode
-                },
-                { withCredentials: true }
-            );
+        
+            const response = await api.completeOrder({ verificationId: verificationId, code: verificationCode })
 
-            console.log('Покупка завершена успешно:', response.data);
+            console.log('Покупка завершена успешно:', response);
             setSuccess('Покупка успешно завершена!');
             
             // Переходим к следующему шагу

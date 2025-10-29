@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "generate-api": "orval",
-    "dev": "npm run generate-api && next dev",
-    "build": "npm run generate-api && next build",
+    "dev": "next dev",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint"
   },

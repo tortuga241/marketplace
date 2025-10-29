@@ -17,6 +17,7 @@ import type {
   VerifyRegisterDto,
 } from "./model";
 
+import type { AxiosRequestConfig } from "axios";
 import { customInstance } from "../axios-instance";
 export const getMarketAPI = () => {
   const appControllerGetHello = () => {
@@ -117,13 +118,15 @@ export const getMarketAPI = () => {
 
   /**
    * @summary Запрос на создание лота
+   * Добавил config для работы headers в ручную
    */
-  const lotControllerLot = (lotDto: LotDto) => {
+  const lotControllerLot = (lotDto: LotDto, config?: AxiosRequestConfig,) => {
     return customInstance<void>({
       url: `/lots/create`,
       method: "POST",
       headers: { "Content-Type": "application/json" },
       data: lotDto,
+      ...config,
     });
   };
 

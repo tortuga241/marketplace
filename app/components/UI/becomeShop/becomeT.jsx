@@ -2,7 +2,6 @@
 
 import styles from './style/becomeT.module.css';
 import { CheckCircle2, ArrowLeft } from 'lucide-react';
-import axios from 'axios';
 import { useState } from 'react';
 
 export default function BecomeT({ onBack, onSubmit, onChange, formData}) {

@@ -3,15 +3,16 @@
 import { useState } from "react";
 import styles from "./style.module.css";
 import { CheckCircle2 } from "lucide-react"; 
-import axios from "axios";
 
 import BecomeF from "../components/UI/becomeShop/becomeF";
 import BecomeS from "../components/UI/becomeShop/becomeS";
 import BecomeT from "../components/UI/becomeShop/becomeT";
 
+import { useApi } from "../src/hooks/useApi";
+
 export default function BecomeSeller() {
 
-  const host = process.env.NEXT_PUBLIC_HOST;
+  const api = useApi();
 
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -32,37 +33,32 @@ export default function BecomeSeller() {
   };
 
 
-const handleSubmit = async () => {
-  try {
-    const response = await axios.post(`${host}/shop/create`,
-      {
-        type: formData.type,
+  //POST запрос на создание магазина
+  const handleSubmit = async () => {
+    try {
+      const response = await api.createShop({ 
+        type: formData.type, 
         category: formData.category,
-        title: formData.title,
-        description: formData.description,
-        phone: formData.phone,
-      },
-      {
-        withCredentials: true, 
+        title: formData.title, 
+        description: formData.description, 
+        phone: formData.phone 
+      })
+
+      console.log("Магазин создан:", response.data);
+      alert("Магазин успешно создан!");
+    } catch (error) {
+      console.error("Ошибка при создании магазина:", error);
+      if (error.response?.status === 401) {
+        alert("Не авторизован. Войдите в систему.");
+        window.location.href = '/register';
+      } else {
+        alert("Ошибка при создании магазина");
       }
-    );
-
-    console.log("Магазин создан:", response.data);
-    alert("Магазин успешно создан!");
-  } catch (error) {
-    console.error("Ошибка при создании магазина:", error);
-    if (error.response?.status === 401) {
-      alert("Не авторизован. Войдите в систему.");
-      window.location.href = '/register';
-    } else {
-      alert("Ошибка при создании магазина");
     }
-  }
-};
+  };
 
 
-
-  // выбор шага
+  //Шаги при создании магазина
   const renderStep = () => {
     switch (step) {
       case 1:
@@ -75,6 +71,7 @@ const handleSubmit = async () => {
         return null;
     }
   };
+
 
   return (
     <div className={styles.main_become}>

@@ -28,7 +28,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-, "app/components/UI/profile/profileUser.jsx", "app/components/UI/profile/profileSellerComp.jsx"  ],
+, "app/components/UI/profile/profileUser.jsx", "app/components/UI/profile/profileSellerComp.jsx", "app/buy-product/page.jsx", "app/profile/[id]/page.jsx"  ],
   "exclude": [
     "node_modules"
   ]

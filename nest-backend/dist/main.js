@@ -12,6 +12,12 @@ async function bootstrap() {
     app.enableCors({
         origin: 'http://localhost:3000',
         credentials: true,
+        allowedHeaders: [
+            'Content-Type',
+            'Authorization',
+            'x-shop-id',
+            'x-account-id'
+        ],
     });
     const config = new swagger_1.DocumentBuilder()
         .setTitle('Market API')
@@ -22,7 +28,7 @@ async function bootstrap() {
     const document = swagger_1.SwaggerModule.createDocument(app, config);
     const outputPath = (0, path_1.resolve)(process.cwd(), 'openapi.json');
     (0, fs_1.writeFileSync)(outputPath, JSON.stringify(document, null, 2));
-    console.log(`✅ OpenAPI схема сохранена: ${outputPath}`);
+    console.log(`OpenAPI схема сохранена: ${outputPath}`);
     swagger_1.SwaggerModule.setup('api/docs', app, document);
     await app.listen(process.env.PORT ?? 3001);
 }

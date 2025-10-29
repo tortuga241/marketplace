@@ -1,8 +1,7 @@
-// Файл: ProductCardS.js
 import styles from './styles/cardProductS.module.css';
 import { Star, Trash2 } from 'lucide-react';
+import Link from 'next/link';
 
-// Принимаем getProductRating как пропс
 export default function ProductCardS({ lots, isOwner, onDelete, getProductRating }) { 
     
     const handleDeleteClick = (lotId) => {
@@ -45,7 +44,7 @@ export default function ProductCardS({ lots, isOwner, onDelete, getProductRating
                             <div className={styles.cost_cps}>{lot.cost}₸</div>
                         </div>
                         <div className={styles.row_container_cps}>
-                            <button className={styles.buy_but_cps} style={{flexGrow: "1"}}>Подробнее</button>
+                            <Link href={`/product/${lot.id}`}><button className={styles.buy_but_cps} style={{flexGrow: "1"}}>Подробнее</button></Link>
                             {isOwner && (
                                 <button onClick={() => handleDeleteClick(lot.id)} className={styles.delete_cps} style={{marginLeft: "5px"}}><Trash2 width={16} height={16} /></button>
                             )}

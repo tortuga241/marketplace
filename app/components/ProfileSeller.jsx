@@ -4,7 +4,6 @@ import styles from './ProfileSeller.module.css';
 import Header from './Header';
 import Footer from './footer';
 import { useState, useEffect, useCallback, useRef } from 'react';
-import axios from 'axios';
 
 import { Box, Star, Lightbulb, ShoppingBasket } from 'lucide-react'
 
@@ -48,13 +47,24 @@ export default function ProfileSeller({ user, shop, isOwner, sales = [], isLoadi
     const [hasLoadedOrders, setHasLoadedOrders] = useState(false);
     const prevActiveTabRef = useRef(activeTab);
 
-    const host = process.env.NEXT_PUBLIC_HOST;
-
     const userId = user?.id || '';
     const shopId = shop?.id || '';
     
     const showAddProductButton = isOwner;
     const showReviewInput = !isOwner;
+
+    const [currentUser, setCurrentUser] = useState(null);
+
+    // Функция для получения текущего пользователя
+    const fetchCurrentUser = async () => {
+        try {
+            const userData = await api.getProfile();
+            setCurrentUser(userData);
+        } catch (err) {
+            console.log("Пользователь не авторизован");
+            setCurrentUser(null);
+        }
+    };
 
     const handleLotCreated = (newLot) => {
         setLots(prevLots => [newLot, ...prevLots]);
@@ -136,7 +146,8 @@ export default function ProfileSeller({ user, shop, isOwner, sales = [], isLoadi
                 setIsSubmitting(false);
                 return;
             }
-            await axios.post(`${host}/reviews`, reviewData, { withCredentials: true });
+            // await axios.post(`${host}/reviews`, reviewData, { withCredentials: true });
+            const response = await api.createReview({ reviewData: reviewData })
             await fetchShopReviews();
             
             setRating(0);
@@ -169,8 +180,9 @@ export default function ProfileSeller({ user, shop, isOwner, sales = [], isLoadi
             }
 
             try {
-                const res = await axios.get(`${host}/lots/by-account/${userId}`);
-                const lotsData = res.data;
+                // const res = await axios.get(`${host}/lots/by-account/${userId}`);
+                const res = await api.getLotsByAccountId( userId )
+                const lotsData = res;
                 setLots(lotsData);
                 console.log("Лоты продавца загружены:", lotsData);
 
@@ -196,11 +208,13 @@ export default function ProfileSeller({ user, shop, isOwner, sales = [], isLoadi
 
         setReviewsLoading(true);
         setReviewsError(null);
+        await fetchCurrentUser();
 
         try {
-            const response = await axios.get(`${host}/reviews/shop/${shopId}`);
-            setShopReviews(response.data);
-            console.log("Отзывы магазина загружены:", response.data);
+            // const response = await axios.get(`${host}/reviews/shop/${shopId}`);
+            const response = await api.getReviewsForShop( shopId )
+            setShopReviews(response);
+            console.log("Отзывы магазина загружены:", response);
             setHasLoadedReviews(true);
         } catch (error) {
             console.error("Ошибка при загрузке отзывов магазина:", error);
@@ -208,23 +222,25 @@ export default function ProfileSeller({ user, shop, isOwner, sales = [], isLoadi
         } finally {
             setReviewsLoading(false);
         }
-    }, [shopId, host]);
+    }, [shopId, api]);
 
     // GET запрос на получение отзывов о товаре
     const fetchProductReviews = useCallback(async (lotId) => {
         if (!lotId) return;
 
         try {
-            const response = await axios.get(`${host}/reviews/lot/${lotId}`);
+            // const response = await axios.get(`${host}/reviews/lot/${lotId}`);
+            const response = await api.getReviewsForLot( lotId )
             setProductReviews(prev => ({
                 ...prev,
-                [lotId]: response.data
+                [lotId]: response
             }));
-            console.log(`Отзывы товара ${lotId} загружены:`, response.data);
+            await fetchCurrentUser();
+            console.log(`Отзывы товара ${lotId} загружены:`, response);
         } catch (error) {
             console.error(`Ошибка при загрузке отзывов товара ${lotId}:`, error);
         }
-    }, [host]);
+    }, [api]);
 
     useEffect(() => {
         if (activeTab === "reviews" && !hasLoadedReviews) {
@@ -269,7 +285,8 @@ export default function ProfileSeller({ user, shop, isOwner, sales = [], isLoadi
         }
 
         try {
-            const response = await axios.delete(`${host}/lots/${lotId}`, {withCredentials: true, });
+            // const response = await axios.delete(`${host}/lots/${lotId}`, {withCredentials: true, });
+            const response = await api.deleteOrHideLot( lotId )
 
             setLots(prevLots => prevLots.filter(lot => lot.id !== lotId));
             setProductReviews(prev => {
@@ -278,7 +295,7 @@ export default function ProfileSeller({ user, shop, isOwner, sales = [], isLoadi
                 return newReviews;
             });
 
-            console.log(response.data.message); 
+            console.log(response.message); 
 
         } catch (error) {
             console.error("Ошибка при удалении/скрытии лота:", error);
@@ -362,7 +379,7 @@ export default function ProfileSeller({ user, shop, isOwner, sales = [], isLoadi
                             </div>
                         )}
                         {submitError && <p style={{ color: 'red', marginTop: '10px' }}>{submitError}</p>}
-                        <ReviewsSeller reviews={shopReviews} />
+                        <ReviewsSeller reviews={shopReviews} currentUser={currentUser} />
                     </div>}
                 {activeTab === "orders" && 
                     (<div className={styles.col_container_ps}>
@@ -383,7 +400,7 @@ export default function ProfileSeller({ user, shop, isOwner, sales = [], isLoadi
                                 <p>Загрузка заказов...</p>
                             ) : sales && sales.length > 0 ? (
                                 sales.map((order) => (
-                                    <SellCart key={order.id} order={order} />
+                                    <SellCart key={order.id} order={order} currentUser={currentUser} />
                                 ))
                             ) : (
                                 <p>У вас пока нет заказов</p>

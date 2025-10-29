@@ -1,4 +1,5 @@
 .main_container_card_rps {
+    position: relative;
     width: 1150px;
     border: 1px solid #dcdcdc;
     padding: 20px;
@@ -34,4 +35,17 @@
 .review_txt_rps {
     margin-top: 20px;
     color: gray;
+}
+
+.icon_del {
+  cursor: pointer;
+  color: #666;
+  transition: color 0.2s;
+  position: absolute;
+  right: 10px;
+  top: 8px;
+}
+
+.icon_del:hover {
+  color: #ff4444;
 }
